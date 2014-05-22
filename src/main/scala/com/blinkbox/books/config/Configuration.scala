@@ -30,6 +30,7 @@ trait Configuration {
       uri.getScheme match {
         case _ @ ("http" | "https") => ConfigFactory.parseURL(uri.toURL, parseOptions)
         case "file" => ConfigFactory.parseFile(new File(uri), parseOptions)
+        case "classpath" => ConfigFactory.parseResources(this.getClass, uri.getPath, parseOptions)
         case other => throw new ConfigException.Generic(s"$configVar has unsupported scheme '$other'.")
       }
     }
