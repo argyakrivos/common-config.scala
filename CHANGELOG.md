@@ -1,5 +1,4 @@
-Change Log
-
+# Change Log
 
 ## 0.1.0 ([#1](https://git.mobcastdev.com/Platform/common-config/pull/1) 2014-05-22 15:26:14)
 
