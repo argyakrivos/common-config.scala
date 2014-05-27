@@ -1,7 +1,6 @@
 package com.blinkbox.books.config
 
 import com.typesafe.config.{Config, ConfigException, ConfigFactory, ConfigParseOptions}
-import com.typesafe.config.impl.SimpleIncluder
 import java.io.File
 import java.net.{URI, URISyntaxException}
 

@@ -4,7 +4,7 @@ Contains code to configure your Scala projects.
 
 ## Overview
 
-The configuration is loaded from the system properties , `application.conf` and `reference.conf` in the usual way using the [Typesafe Config library](https://github.com/typesafehub/config). However, if there is an environment variable `CONFIG_URL` defined then config will also be loaded from this and override any local settings _except_ those specified in the system properties. In other words, the order of precedence for config settings is:
+The configuration is loaded from the system properties, `application.conf` and `reference.conf` in the usual way using the [Typesafe Config library](https://github.com/typesafehub/config). However, if there is an environment variable `CONFIG_URL` defined then config will also be loaded from this and override any local settings _except_ those specified in the system properties. In other words, the order of precedence for config settings is:
 
  - System properties (e.g. `java -Dmyapp.foo.bar=10`)
  - The configuration at `CONFIG_URL`
@@ -28,6 +28,8 @@ Examples:
 It really couldn't be simpler. Just mix in the `Configuration` trait and you'll have a new `config` field available to you with the loaded and merged configuration, e.g.
 
 ~~~scala
+import com.blinkbox.books.config.Configuration
+
 object MyApp extends App with Configuration {
   println(config) // or do something more useful
 }
@@ -43,7 +45,7 @@ class AppConfig(config: Config) {
 
 class BraintreeConfig(config: Config) {
   val environment = config.getString("braintree.environment") match {
-    case "DEVELOPMENT" => Environment.PRODUCTION
+    case "DEVELOPMENT" => Environment.DEVELOPMENT
     case "SANDBOX" => Environment.SANDBOX
     case "PRODUCTION" => Environment.PRODUCTION
     case env => throw new BadValue(config.origin, "braintree.environment", s"Unknown: '$env'.")

@@ -1,8 +1,8 @@
 package com.blinkbox.books.config
 
-import org.scalatest.{BeforeAndAfterEach, FunSuite, Matchers}
-import java.io.File
 import com.typesafe.config.ConfigFactory
+import java.io.File
+import org.scalatest.{BeforeAndAfterEach, FunSuite, Matchers}
 
 class ConfigurationTests extends FunSuite with BeforeAndAfterEach with Matchers {
 
