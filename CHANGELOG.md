@@ -1,5 +1,19 @@
 # Change Log
 
+## 0.2.0 ([#2](https://git.mobcastdev.com/Platform/common-config/pull/2) 2014-05-27 17:01:23)
+
+Added tests for config loading
+
+#### New features
+
+- The external configuration file can be overridden by the system
+properties (e.g. `java -Dmyapp.foo.bar=10`).
+
+#### Improvements
+
+- The README file now explains the usage and has an example of strongly
+typed config objects.
+
 ## 0.1.0 ([#1](https://git.mobcastdev.com/Platform/common-config/pull/1) 2014-05-22 15:26:14)
 
 Added basic config support
