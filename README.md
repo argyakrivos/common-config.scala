@@ -38,30 +38,39 @@ object MyApp extends App with Configuration {
 To validate the configuration, as well as transforming it into a more usable format, it may be useful to build a strongly-typed eagerly-evaluated configuration wrapper around this loosely typed property bag. An example of this is below, which validates that all the required properties are present and transforms some of them into more useful objects such as gateways or URLs:
 
 ~~~scala
-class AppConfig(config: Config) {
-  val braintree = new BraintreeConfig(config)
-  val service = new ServiceConfig(config)
-}
+case class AppConfig(braintree: BraintreeConfig, service: ServiceConfig)
 
-class BraintreeConfig(config: Config) {
-  val environment = config.getString("braintree.environment") match {
-    case "DEVELOPMENT" => Environment.DEVELOPMENT
-    case "SANDBOX" => Environment.SANDBOX
-    case "PRODUCTION" => Environment.PRODUCTION
-    case env => throw new BadValue(config.origin, "braintree.environment", s"Unknown: '$env'.")
-  }
-  val merchantId = config.getString("braintree.merchantId")
-  val publicKey = config.getString("braintree.publicKey")
-  val privateKey = config.getString("braintree.privateKey")
+case class BraintreeConfig(environment: Environment, merchantId: String, publicKey: String, privateKey: String) {
   val gateway = new BraintreeGateway(environment, merchantId, publicKey, privateKey)
 }
 
-class ServiceConfig(config: Config) {
-  val auth = config.getHttpUrl("service.auth.uri")
+case class ServiceConfig(auth: URL)
+
+object AppConfig {
+  def apply(config: Config): AppConfig = AppConfig(BraintreeConfig(config), ServiceConfig(config))
+}
+
+object BraintreeConfig {
+  def apply(config: Config): BraintreeConfig = {
+    val environment = config.getString("braintree.environment") match {
+      case "DEVELOPMENT" => Environment.DEVELOPMENT
+      case "SANDBOX" => Environment.SANDBOX
+      case "PRODUCTION" => Environment.PRODUCTION
+      case env => throw new BadValue(config.origin, "braintree.environment", s"Unknown environment '$env'.")
+    }
+    val merchantId = config.getString("braintree.merchantId")
+    val publicKey = config.getString("braintree.publicKey")
+    val privateKey = config.getString("braintree.privateKey")
+    BraintreeConfig(environment, merchantId, publicKey, privateKey)
+  }
+}
+
+object ServiceConfig {
+  def apply(config: Config): ServiceConfig = ServiceConfig(config.getHttpUrl("service.auth.uri"))
 }
 
 object MyApp extends App with Configuration {
-  val appConfig = new AppConfig(config)
+  val appConfig = AppConfig(config)
 }
 ~~~
 

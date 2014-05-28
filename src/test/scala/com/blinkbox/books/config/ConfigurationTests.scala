@@ -8,9 +8,10 @@ class ConfigurationTests extends FunSuite with BeforeAndAfterEach with Matchers 
 
   class Configured extends Configuration
 
-  // clean up any things we change in the tests
-  override def beforeEach() {
-    setConfigUrl(None)
+  val originalEnvironment = System.getenv()
+
+  override def afterEach() {
+    setEnv(originalEnvironment)
     System.clearProperty("testing.conf.test")
   }
 
@@ -54,8 +55,8 @@ class ConfigurationTests extends FunSuite with BeforeAndAfterEach with Matchers 
   // TODO: Could test HTTP loading using URLStreamHandlerFactory, but is it worth the effort?
 
   private def setConfigUrl(url: Option[String]) = {
-    val newEnv = new java.util.HashMap[String, String]
-    url foreach { newEnv.put("CONFIG_URL", _) }
+    val newEnv = new java.util.HashMap[String, String](System.getenv())
+    url.foreach(newEnv.put("CONFIG_URL", _))
     setEnv(newEnv)
   }
 
@@ -70,14 +71,10 @@ class ConfigurationTests extends FunSuite with BeforeAndAfterEach with Matchers 
     map.putAll(newEnv)
   }
 
-  private def resourceFile(filename: String) = {
-    val f = new File("src/test/resources", filename)
-    if (!f.exists()) throw new Exception(s"Resource file not found: ${f.getPath}")
-    s"file://${f.getAbsolutePath}"
-  }
+  private def resourceFile(filename: String) = getClass.getClassLoader.getResource(filename).toString
 
   private def loadTestConfig = {
-    ConfigFactory.invalidateCaches() // ensure we're loading afresh; doesn't work in beforeEach
+    ConfigFactory.invalidateCaches() // ensure we're loading afresh
     new Configured().config
   }
 }
