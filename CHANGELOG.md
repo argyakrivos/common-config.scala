@@ -1,5 +1,11 @@
 # Change Log
 
+## 0.2.1 ([#4](https://git.mobcastdev.com/Platform/common-config/pull/4) 2014-06-05 13:09:04)
+
+Tiny change to force rebuild, should be published to Artifactory
+
+Patch: force version update for rebuild.
+
 ## 0.2.0 ([#2](https://git.mobcastdev.com/Platform/common-config/pull/2) 2014-05-27 17:01:23)
 
 Added tests for config loading
