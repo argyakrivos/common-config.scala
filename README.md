@@ -73,4 +73,3 @@ object MyApp extends App with Configuration {
   val appConfig = AppConfig(config)
 }
 ~~~
-
