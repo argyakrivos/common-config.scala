@@ -1,8 +1,9 @@
 package com.blinkbox.books
 
-import java.net.{MalformedURLException, URL}
 import com.typesafe.config.Config
 import com.typesafe.config.ConfigException.BadValue
+import java.io.File
+import java.net.{MalformedURLException, URL}
 
 /**
  * Provides classes to help with configuring applications.
@@ -10,10 +11,24 @@ import com.typesafe.config.ConfigException.BadValue
 package object config {
 
   /**
-   * Extends the Config class with methods that retrieve and validate URLs.
+   * Extends the Config class with additional loading methods.
+   *
    * @param config The config class to extend.
    */
-  implicit class UrlConfig(val config: Config) extends AnyVal {
+  implicit class RichConfig(val config: Config) extends AnyVal {
+
+    /**
+     * Gets a file or directory.
+     * @param path The path expression.
+     * @param validate A function to validate that the file is acceptable.
+     * @return The file object.
+     */
+    def getFile(path: String, validate: File => Boolean = _ => true): File = {
+      val file = new File(config.getString(path))
+      if (!validate(file)) throw new BadValue(config.origin, path, s"Path '${file.getAbsolutePath}' is invalid.")
+      file
+    }
+
     /**
      * Gets a URL with any scheme.
      * @param path The path expression.
@@ -51,6 +66,7 @@ package object config {
      * @return The http(s) URI value at the requested path.
      */
     def getHttpUrl(path: String): URL = getUrl(path, "http", "https")
+
   }
 
 }
