@@ -1,5 +1,15 @@
 # Change Log
 
+## 0.3.0 ([#5](https://git.mobcastdev.com/Platform/common-config/pull/5) 2014-06-16 10:58:58)
+
+Added some typed config sections.
+
+### New features
+
+- Added some typed config objects for common settings.
+- Added a `getFile` method to the `Config` class.
+- Improved the README.
+
 ## 0.2.1 ([#4](https://git.mobcastdev.com/Platform/common-config/pull/4) 2014-06-05 13:09:04)
 
 Tiny change to force rebuild, should be published to Artifactory
