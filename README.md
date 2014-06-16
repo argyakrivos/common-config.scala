@@ -33,12 +33,12 @@ There are a number of standard configuration setting names, and a recommended st
 Because the dev config settings are in `application.conf` it's _really_ important that this file is excluded from any JARs that are built or they might accidentally get loaded as the production settings! In your `build.sbt` file make sure you add something like this which will discard the file when building the JAR:
 
 ~~~scala
-  mergeStrategy in assembly <<= (mergeStrategy in assembly) { old =>
-    {
-      case PathList("application.conf") => MergeStrategy.discard
-      case x => old(x)
-    }
+mergeStrategy in assembly <<= (mergeStrategy in assembly) { old =>
+  {
+    case PathList("application.conf") => MergeStrategy.discard
+    case x => old(x)
   }
+}
 ~~~
 
 ## Using the library

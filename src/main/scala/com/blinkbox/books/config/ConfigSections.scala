@@ -24,7 +24,7 @@ object ApiConfig {
 object AuthClientConfig {
   def apply(config: Config): AuthClientConfig = AuthClientConfig(
     config.getHttpUrl("service.auth.api.internalUrl"),
-    config.getFile("client.auth.keysDir", f => f.isDirectory && f.exists))
+    config.getFile("client.auth.keysDir", _.isDirectory))
 }
 
 object DatabaseConfig {
