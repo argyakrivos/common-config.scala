@@ -1,5 +1,13 @@
 # Change Log
 
+## 0.3.1 ([#6](https://git.mobcastdev.com/Platform/common-config/pull/6) 2014-06-16 17:19:04)
+
+Changed Duration to FiniteDuration
+
+Patch to return the more specific `FiniteDuration` type rather than
+`Duration` as the latter is not implicitly convertible to an Akka
+timeout.
+
 ## 0.3.0 ([#5](https://git.mobcastdev.com/Platform/common-config/pull/5) 2014-06-16 10:58:58)
 
 Added some typed config sections.
