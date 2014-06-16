@@ -6,7 +6,7 @@ import java.net.URL
 import java.util.concurrent.TimeUnit
 import scala.concurrent.duration._
 
-case class ApiConfig(externalUrl: URL, localUrl: URL, timeout: Duration)
+case class ApiConfig(externalUrl: URL, localUrl: URL, timeout: FiniteDuration)
 case class AuthClientConfig(url: URL, keysDir: File) {
   val sessionUrl = new URL(url, "session")
 }
