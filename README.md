@@ -35,7 +35,7 @@ Because the dev config settings are in `application.conf` it's _really_ importan
 ~~~scala
 mergeStrategy in assembly <<= (mergeStrategy in assembly) { old =>
   {
-    case PathList("application.conf") => MergeStrategy.discard
+    case "application.conf" => MergeStrategy.discard
     case x => old(x)
   }
 }
