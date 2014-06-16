@@ -1,6 +1,6 @@
 # common-config
 
-Contains code to configure your Scala projects.
+Contains code to configure your Scala projects using [HOCON](https://github.com/typesafehub/config/blob/master/HOCON.md).
 
 ## Overview
 
@@ -11,17 +11,35 @@ The configuration is loaded from the system properties, `application.conf` and `
  - `application.conf`
  - `reference.conf`
 
-The following URL schemes are supported:
+The following URL schemes are supported for `CONFIG_URL`:
 
  - `http` and `https`, which are ideal for production systems with a centralised configuration service.
  - `file`, which is ideal for  production systems using a configuration management system such as puppet to create application-specific configuration files.
- - `classpath`, which is intended for development or testing purposes so that you don't need any external dependencies. It's highly recommended that you use file names that won't be mistaken for production configuration, such as ''development.conf''.
+ - `classpath`, which is intended for development or testing purposes so that you don't need any external dependencies. It's highly recommended that you use file names that won't be mistaken for production configuration such as `testing.conf`.
 
-Examples:
+## Configuration structure
 
- - `https://config-service/dynamic.conf`
- - `file:///etc/my-service.conf`
- - `classpath:///development.conf`
+When using this library, the recommended way to structure your configuration is as follows:
+
+ - Put all the settings that have sensible defaults (e.g. log level, timeouts) into `reference.conf` as a baseline configuration. Do not put any environment-specific settings such as URLs or port numbers in here!
+ - Put all the settings that have sensible defaults on a dev workstation into `application.conf` -- this might include standard local URLs, port numbers, database names, etc. to make it easy for people to work on the project.
+ - Use the configuration pointed to by `CONFIG_URL` for the majority of the runtime configuration (i.e. the environment-specific settings) in environments other than development (e.g. CI build, QA, production).
+ - Use the `-D` overrides for any local overrides. These might be temporary overrides such as log level, or to allow sensitive settings such as private keys to be specified separately from shared configuration.
+
+There are a number of standard configuration setting names, and a recommended structure for application setting names described [in Confluence](http://jira.blinkbox.local/confluence/display/PT/Service+Configuration+Guidelines).
+
+## Excluding dev config from JARs
+
+Because the dev config settings are in `application.conf` it's _really_ important that this file is excluded from any JARs that are built or they might accidentally get loaded as the production settings! In your `build.sbt` file make sure you add something like this which will discard the file when building the JAR:
+
+~~~scala
+mergeStrategy in assembly <<= (mergeStrategy in assembly) { old =>
+  {
+    case "application.conf" => MergeStrategy.discard
+    case x => old(x)
+  }
+}
+~~~
 
 ## Using the library
 
@@ -56,7 +74,7 @@ object BraintreeConfig {
       case "DEVELOPMENT" => Environment.DEVELOPMENT
       case "SANDBOX" => Environment.SANDBOX
       case "PRODUCTION" => Environment.PRODUCTION
-      case env => throw new BadValue(config.origin, "braintree.environment", s"Unknown environment '$env'.")
+      case env => throw new BadValue(config.origin, "braintree.environment", s"Unknown: '$env'.")
     }
     val merchantId = config.getString("braintree.merchantId")
     val publicKey = config.getString("braintree.publicKey")
@@ -73,4 +91,3 @@ object MyApp extends App with Configuration {
   val appConfig = AppConfig(config)
 }
 ~~~
-
