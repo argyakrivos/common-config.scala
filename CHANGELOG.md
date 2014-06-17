@@ -1,5 +1,21 @@
 # Change Log
 
+## 0.3.2 ([#7](https://git.mobcastdev.com/Platform/common-config/pull/7) 2014-06-17 08:59:50)
+
+Changed non-parsing URLs to URIs
+
+### Bug fixes
+
+- Changed database and rabbit `URL`s to `URI`s as the mysql and amqp
+schemes fail to parse as URLs.
+- Corrected the swagger config loading to use the string `v1` rather
+than just `1`.
+
+### Improvements
+
+- Added tests for the config section loading to prevent silly mistakes
+like the above!
+
 ## 0.3.1 ([#6](https://git.mobcastdev.com/Platform/common-config/pull/6) 2014-06-16 17:19:04)
 
 Changed Duration to FiniteDuration
