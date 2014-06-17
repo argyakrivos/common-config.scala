@@ -2,7 +2,7 @@ package com.blinkbox.books.config
 
 import com.typesafe.config.Config
 import java.io.File
-import java.net.URL
+import java.net.{URI, URL}
 import java.util.concurrent.TimeUnit
 import scala.concurrent.duration._
 
@@ -10,8 +10,8 @@ case class ApiConfig(externalUrl: URL, localUrl: URL, timeout: FiniteDuration)
 case class AuthClientConfig(url: URL, keysDir: File) {
   val sessionUrl = new URL(url, "session")
 }
-case class DatabaseConfig(url: URL)
-case class RabbitConfig(url: URL)
+case class DatabaseConfig(uri: URI)
+case class RabbitConfig(uri: URI)
 case class SwaggerConfig(baseUrl: URL, specPath: String, resourcePath: String)
 
 object ApiConfig {
@@ -29,16 +29,16 @@ object AuthClientConfig {
 
 object DatabaseConfig {
   def apply(config: Config, prefix: String): DatabaseConfig = DatabaseConfig(
-    config.getUrl(s"$prefix.url"))
+    config.getUri(s"$prefix.url"))
 }
 
 object RabbitConfig {
-  def apply(config: Config): RabbitConfig = RabbitConfig(config.getUrl("rabbitmq.url"))
+  def apply(config: Config): RabbitConfig = RabbitConfig(config.getUri("rabbitmq.url", "amqp"))
 }
 
 object SwaggerConfig {
   def apply(config: Config, version: Int): SwaggerConfig = SwaggerConfig(
-    config.getHttpUrl(s"swagger.$version.baseUrl"),
-    config.getString(s"swagger.$version.specPath"),
-    config.getString(s"swagger.$version.resourcePath"))
+    config.getHttpUrl(s"swagger.v$version.baseUrl"),
+    config.getString(s"swagger.v$version.specPath"),
+    config.getString(s"swagger.v$version.resourcePath"))
 }
