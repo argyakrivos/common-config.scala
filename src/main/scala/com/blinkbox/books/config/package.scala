@@ -3,7 +3,7 @@ package com.blinkbox.books
 import com.typesafe.config.Config
 import com.typesafe.config.ConfigException.BadValue
 import java.io.File
-import java.net.{MalformedURLException, URL}
+import java.net.{URISyntaxException, URI, MalformedURLException, URL}
 
 /**
  * Provides classes to help with configuring applications.
@@ -30,9 +30,33 @@ package object config {
     }
 
     /**
-     * Gets a URL with any scheme.
+     * Gets a URI with any scheme.
      * @param path The path expression.
      * @return The URI value at the requested path.
+     */
+    def getUri(path: String): URI = {
+      val s = config.getString(path)
+      try new URI(s) catch {
+        case e: URISyntaxException => throw new BadValue(config.origin, path, s"Invalid URI '$s'.")
+      }
+    }
+
+    /**
+     * Gets a URI with a permitted scheme.
+     * @param path The path expression.
+     * @param schemes The permitted schemes for the URI.
+     * @return The URI value at the requested path.
+     */
+    def getUri(path: String, schemes: String*): URI = {
+      val uri = getUri(path)
+      if (!schemes.contains(uri.getScheme)) throw new BadValue(config.origin, path, s"Invalid scheme '$uri'.")
+      uri
+    }
+
+    /**
+     * Gets a URL with any scheme.
+     * @param path The path expression.
+     * @return The URL value at the requested path.
      */
     def getUrl(path: String): URL = {
       val s = config.getString(path)
@@ -45,7 +69,7 @@ package object config {
      * Gets a URL with a permitted scheme.
      * @param path The path expression.
      * @param schemes The permitted schemes for the URL.
-     * @return The URI value at the requested path.
+     * @return The URL value at the requested path.
      */
     def getUrl(path: String, schemes: String*): URL = {
       val url = getUrl(path)
@@ -54,16 +78,9 @@ package object config {
     }
 
     /**
-     * Gets a URL with an amqp scheme.
-     * @param path The path expression.
-     * @return The amqp URI value at the requested path.
-     */
-    def getAmqpUrl(path: String): URL = getUrl(path, "amqp")
-
-    /**
      * Gets a URL with an http or https scheme.
      * @param path The path expression.
-     * @return The http(s) URI value at the requested path.
+     * @return The http(s) URL value at the requested path.
      */
     def getHttpUrl(path: String): URL = getUrl(path, "http", "https")
 
