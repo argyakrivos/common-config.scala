@@ -15,22 +15,25 @@ import scala.collection.JavaConverters._
 class GelfLayout extends LayoutBase[ILoggingEvent] {
   private var shortMessageLayout: PatternLayout = null
   private var fullMessageLayout: PatternLayout = null
+  private var exceptionLayout: PatternLayout = null
 
   @BeanProperty var facility: String = null
-  @BeanProperty var shortMessagePattern: String = "%.-128message"
-  @BeanProperty var fullMessagePattern: String = "%message"
+  @BeanProperty var shortMessagePattern: String = "%.-128message%nopex"
+  @BeanProperty var fullMessagePattern: String = "%message%nopex"
   @BeanProperty var includeLoggerName: Boolean = false
   @BeanProperty var includeThreadName: Boolean = false
 
   override def start() {
     shortMessageLayout = newPatternLayout(shortMessagePattern)
     fullMessageLayout = newPatternLayout(fullMessagePattern)
+    exceptionLayout = newPatternLayout("%xThrowable")
     super.start()
   }
 
   override def stop() {
     shortMessageLayout.stop()
     fullMessageLayout.stop()
+    exceptionLayout.stop()
   }
 
   override def doLayout(event: ILoggingEvent): String = {
@@ -45,25 +48,16 @@ class GelfLayout extends LayoutBase[ILoggingEvent] {
     if (facility != null) json ~= ("_facility", facility)
     if (includeLoggerName) json ~= ("_loggerName", event.getLoggerName)
     if (includeThreadName) json ~= ("_threadName", event.getThreadName)
-    callerData(event).foreach(json ~= _)
     if (event.getMarker != null) json ~= ("_marker", event.getMarker.toString)
+    callerData(event).foreach(json ~= _)
     event.getMDCPropertyMap.asScala.foreach { case (k, v) => json ~= (s"_$k", v) }
+    exceptionData(event).foreach(json ~= _)
 
     val layout = new StringWriter(512)
     mapper.writeValue(layout, render(json))
     layout.write(CoreConstants.LINE_SEPARATOR)
     layout.toString
   }
-
-  private def callerData(event: ILoggingEvent): Option[JObject] =
-    event.getCallerData match {
-      case Array(c, _*) => Some(("_file" -> c.getFileName) ~ ("_line" -> c.getLineNumber) ~ ("_method" -> c.getMethodName))
-      case _ => None
-    }
-
-  //  private def stackTrack(event: ILoggingEvent): Option[JObject] = {
-  //    event.getThrowableProxy
-  //  }
 
   private def newPatternLayout(pattern: String) = {
     val layout = new PatternLayout
@@ -72,4 +66,17 @@ class GelfLayout extends LayoutBase[ILoggingEvent] {
     layout.start()
     layout
   }
+
+  private def callerData(event: ILoggingEvent): Option[JObject] =
+    event.getCallerData match {
+      case Array(c, _*) => Some(("_file" -> c.getFileName) ~ ("_line" -> c.getLineNumber) ~ ("_method" -> c.getMethodName))
+      case _ => None
+    }
+
+  private def exceptionData(event: ILoggingEvent): Option[JObject] =
+    Option(event.getThrowableProxy) map { proxy =>
+      ("_exceptionClass" -> proxy.getClassName) ~
+        ("_exceptionMessage" -> proxy.getMessage) ~
+        ("_exceptionDetail" -> exceptionLayout.doLayout(event))
+    }
 }

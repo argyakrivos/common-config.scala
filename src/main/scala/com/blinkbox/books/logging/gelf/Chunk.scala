@@ -1,8 +1,8 @@
 package com.blinkbox.books.logging.gelf
 
+import java.security.SecureRandom
 import java.io.InputStream
 import java.net.DatagramPacket
-import java.security.SecureRandom
 
 private object Chunk {
   private val rng = new SecureRandom()
