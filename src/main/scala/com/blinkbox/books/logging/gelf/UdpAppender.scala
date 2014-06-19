@@ -7,6 +7,7 @@ import java.nio.charset.StandardCharsets.UTF_8
 import java.util.zip.DeflaterInputStream
 import scala.beans.BeanProperty
 import scala.util.control.NonFatal
+import scala.util.{Failure, Success}
 
 object UdpAppender {
   val DefaultChunkSize = 512
@@ -25,7 +26,7 @@ class UdpAppender[T] extends AppenderBase[T] {
 
   override def start() {
     if (layout == null) addError(s"No layout set for $name")
-    if (maxChunkSize < 256 || maxChunkSize > 8192) addError(s"$name has invalid chunk size")
+    if (maxChunkSize < 256 || maxChunkSize > Chunk.MaxSize) addError(s"$name has invalid chunk size")
 
     socket = new DatagramSocket()
     try socket.connect(InetAddress.getByName(host), port)
@@ -42,7 +43,9 @@ class UdpAppender[T] extends AppenderBase[T] {
 
   def append(event: T) {
     val layoutData = new ByteArrayInputStream(layout.doLayout(event).getBytes(UTF_8))
-    val chunks = Chunk.readChunks(new DeflaterInputStream(layoutData), maxChunkSize)
-    chunks.map(_.toPacket).foreach(socket.send)
+    Chunk.readChunks(new DeflaterInputStream(layoutData), maxChunkSize) match {
+      case Success(chunks) => chunks.map(_.toPacket).foreach(socket.send)
+      case Failure(e) => addWarn(e.getMessage, e)
+    }
   }
 }

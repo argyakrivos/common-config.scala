@@ -3,18 +3,24 @@ package com.blinkbox.books.logging.gelf
 import java.security.SecureRandom
 import java.io.InputStream
 import java.net.DatagramPacket
+import scala.util.{Success, Try}
+
+private object TooManyChunks extends RuntimeException("The log entry is too long to be sent.")
 
 private object Chunk {
   private val rng = new SecureRandom()
 
+  val MaxSize = 8192
   val HeaderSize = 12
   val MessageIdSize = 8
   val MagicNumber1 = 0x1e.asInstanceOf[Byte]
   val MagicNumber2 = 0x0f.asInstanceOf[Byte]
+  val MaxChunkCount = 128
 
-  def readChunks(stream: InputStream, maxSize: Int): Seq[Chunk] = {
+  def readChunks(stream: InputStream, maxSize: Int): Try[Seq[Chunk]] = Try {
     val chunks = Iterator.continually(readChunk(stream, maxSize)).takeWhile(!_.isEmpty).toList
     val count = chunks.length
+    if (count > MaxChunkCount) throw TooManyChunks
     if (count > 1) {
       val messageId = newMessageId()
       chunks.zipWithIndex.map { case (chunk, index) => chunk.withHeader(messageId, index, count) }
