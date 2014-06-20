@@ -1,5 +1,13 @@
 # Change Log
 
+## 0.4.0 ([#8](https://git.mobcastdev.com/Platform/common-config/pull/8) 2014-06-19 13:31:45)
+
+Added GELF (Graylog) logging
+
+### New features
+
+- Added Logback GELF formatter and UDP appender for sending messages to Graylog
+
 ## 0.3.2 ([#7](https://git.mobcastdev.com/Platform/common-config/pull/7) 2014-06-17 08:59:50)
 
 Changed non-parsing URLs to URIs
