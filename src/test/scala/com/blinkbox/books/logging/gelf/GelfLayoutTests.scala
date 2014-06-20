@@ -1,7 +1,7 @@
 package com.blinkbox.books.logging.gelf
 
 import ch.qos.logback.classic.{Level, LoggerContext}
-import ch.qos.logback.classic.spi.{ThrowableProxyVO, LoggingEvent}
+import ch.qos.logback.classic.spi.LoggingEvent
 import java.net.InetAddress
 import org.json4s.jackson.JsonMethods._
 import org.scalatest.{Matchers, FunSuite}
@@ -75,7 +75,6 @@ class GelfLayoutTests extends FunSuite with Matchers {
   }
 
   private def layout(event: LoggingEvent) = {
-    ThrowableProxyVO
     val layout = new GelfLayout
     layout.start()
     val gelf = layout.doLayout(event)
