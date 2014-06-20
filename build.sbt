@@ -10,9 +10,11 @@ scalacOptions := Seq("-unchecked", "-deprecation", "-feature", "-encoding", "utf
 
 libraryDependencies ++= {
   Seq(
-    "com.typesafe"        %   "config"          % "1.2.1",
-    "org.scalatest"       %%  "scalatest"       % "2.1.6" % "test",
-    "junit"               %   "junit"           % "4.11"  % "test",
-    "com.novocode"        %   "junit-interface" % "0.10"  % "test"
+    "com.typesafe"    %   "config"            % "1.2.1",
+    "ch.qos.logback"  %   "logback-classic"   % "1.1.2",
+    "org.json4s"      %%  "json4s-jackson"    % "3.2.10",
+    "org.scalatest"   %%  "scalatest"         % "2.2.0"   % "test",
+    "junit"           %   "junit"             % "4.11"    % "test",
+    "com.novocode"    %   "junit-interface"   % "0.10"    % "test"
   )
 }
