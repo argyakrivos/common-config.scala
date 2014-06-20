@@ -25,6 +25,7 @@ class UdpAppender[T] extends AppenderBase[T] {
   @BeanProperty var port: Int = DefaultPort
 
   override def start() {
+    if (host == null) addError(s"No host set for $name")
     if (layout == null) addError(s"No layout set for $name")
     if (maxChunkSize < 256 || maxChunkSize > Chunk.MaxSize) addError(s"$name has invalid chunk size")
 

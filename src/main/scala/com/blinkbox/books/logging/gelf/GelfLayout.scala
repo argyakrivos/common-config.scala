@@ -5,8 +5,8 @@ import ch.qos.logback.classic.spi.ILoggingEvent
 import ch.qos.logback.classic.util.LevelToSyslogSeverity
 import ch.qos.logback.core.{CoreConstants, LayoutBase}
 import java.io.StringWriter
-import java.net.InetAddress
-import org.json4s.JsonAST.{JDecimal, JObject}
+import java.net.{InetAddress, NetworkInterface, UnknownHostException}
+import org.json4s.JsonAST.JDecimal
 import org.json4s.JsonDSL._
 import org.json4s.jackson.JsonMethods._
 import scala.beans.BeanProperty
@@ -16,6 +16,7 @@ class GelfLayout extends LayoutBase[ILoggingEvent] {
   private var shortMessageLayout: PatternLayout = null
   private var fullMessageLayout: PatternLayout = null
   private var exceptionLayout: PatternLayout = null
+  private var hostName: String = null
 
   @BeanProperty var facility: String = null
   @BeanProperty var shortMessagePattern: String = "%.-128message%nopex"
@@ -27,6 +28,7 @@ class GelfLayout extends LayoutBase[ILoggingEvent] {
     shortMessageLayout = newPatternLayout(shortMessagePattern)
     fullMessageLayout = newPatternLayout(fullMessagePattern)
     exceptionLayout = newPatternLayout("%xThrowable")
+    hostName = lookupHostName
     super.start()
   }
 
@@ -39,7 +41,7 @@ class GelfLayout extends LayoutBase[ILoggingEvent] {
   override def doLayout(event: ILoggingEvent): String = {
     var json =
       ("version" -> "1.1") ~
-      ("host" -> InetAddress.getLocalHost.getHostName) ~
+      ("host" -> hostName) ~
       ("short_message" -> shortMessageLayout.doLayout(event)) ~
       ("full_message" -> fullMessageLayout.doLayout(event)) ~
       ("timestamp" -> JDecimal(BigDecimal(event.getTimeStamp) / 1000)) ~
@@ -58,6 +60,21 @@ class GelfLayout extends LayoutBase[ILoggingEvent] {
     layout.write(CoreConstants.LINE_SEPARATOR)
     layout.toString
   }
+
+  private def lookupHostName: String =
+    try InetAddress.getLocalHost.getHostName
+    catch {
+      case e: UnknownHostException =>
+        addWarn("Failed to get host name; trying to find a non-loopback address", e)
+        val addresses = for {
+          interface <- NetworkInterface.getNetworkInterfaces.asScala
+          address <- interface.getInetAddresses.asScala if !address.isLoopbackAddress
+        } yield address
+        addresses.take(1).toList match {
+          case address :: _ => address.getHostAddress
+          case _ => addError("Failed to get any value for host name"); "unknown"
+        }
+    }
 
   private def newPatternLayout(pattern: String) = {
     val layout = new PatternLayout
