@@ -1,5 +1,13 @@
 # Change Log
 
+## 0.5.0 ([#9](https://git.mobcastdev.com/Platform/common-config/pull/9) 2014-06-23 17:04:24)
+
+Added a diagnostic execution context
+
+### New features
+
+- Added `DiagnosticExecutionContext` which can be used to wrap any `ExecutionContext` to flow MDC information between threads.
+
 ## 0.4.0 ([#8](https://git.mobcastdev.com/Platform/common-config/pull/8) 2014-06-19 13:31:45)
 
 Added GELF (Graylog) logging
