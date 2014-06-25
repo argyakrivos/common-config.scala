@@ -1,10 +1,13 @@
 # common-config
 
-Contains code to configure your Scala projects using [HOCON](https://github.com/typesafehub/config/blob/master/HOCON.md).
+Contains code to bootstrap your Scala applications.
 
-## Overview
+- [Configuration](#configuration)
+- [Logging](#logging)
+ 
+## Configuration
 
-The configuration is loaded from the system properties, `application.conf` and `reference.conf` in the usual way using the [Typesafe Config library](https://github.com/typesafehub/config). However, if there is an environment variable `CONFIG_URL` defined then config will also be loaded from this and override any local settings _except_ those specified in the system properties. In other words, the order of precedence for config settings is:
+[HOCON](https://github.com/typesafehub/config/blob/master/HOCON.md) configuration is loaded from the system properties, `application.conf` and `reference.conf` in the usual way using the [Typesafe Config library](https://github.com/typesafehub/config). However, if there is an environment variable `CONFIG_URL` defined then config will also be loaded from this and override any local settings _except_ those specified in the system properties. In other words, the order of precedence for config settings is:
 
  - System properties (e.g. `java -Dmyapp.foo.bar=10`)
  - The configuration at `CONFIG_URL`
@@ -17,7 +20,7 @@ The following URL schemes are supported for `CONFIG_URL`:
  - `file`, which is ideal for  production systems using a configuration management system such as puppet to create application-specific configuration files.
  - `classpath`, which is intended for development or testing purposes so that you don't need any external dependencies. It's highly recommended that you use file names that won't be mistaken for production configuration such as `testing.conf`.
 
-## Configuration structure
+### Configuration structure
 
 When using this library, the recommended way to structure your configuration is as follows:
 
@@ -28,7 +31,7 @@ When using this library, the recommended way to structure your configuration is 
 
 There are a number of standard configuration setting names, and a recommended structure for application setting names described [in Confluence](http://jira.blinkbox.local/confluence/display/PT/Service+Configuration+Guidelines).
 
-## Excluding dev config from JARs
+### Excluding dev config from JARs
 
 Because the dev config settings are in `application.conf` it's _really_ important that this file is excluded from any JARs that are built or they might accidentally get loaded as the production settings! In your `build.sbt` file make sure you add something like this which will discard the file when building the JAR:
 
@@ -41,7 +44,7 @@ mergeStrategy in assembly <<= (mergeStrategy in assembly) { old =>
 }
 ~~~
 
-## Using the library
+### Configuring your app
 
 It really couldn't be simpler. Just mix in the `Configuration` trait and you'll have a new `config` field available to you with the loaded and merged configuration, e.g.
 
@@ -91,3 +94,16 @@ object MyApp extends App with Configuration {
   val appConfig = AppConfig(config)
 }
 ~~~
+
+## Logging
+
+All logging should be done in [GELF](http://graylog2.org/gelf) format, and in rig environments it is sent via UDP to the log server. To support this the library contains some [Logback](http://logback.qos.ch/) extensions which could be configured as follows:
+
+~~~xml
+<appender name="UDP" class="com.blinkbox.books.logging.gelf.UdpAppender">
+  <layout class="com.blinkbox.books.logging.gelf.GelfLayout" />
+  <host>yourlogserver</host>
+</appender>
+~~~
+
+Any information placed in the [MDC](http://logback.qos.ch/manual/mdc.html) will be sent as properties in the log messages, which are very useful for filtering them. When using futures, ensure you look at the `DiagnosticExecutionContext` to ensure that MDC state is propagated correctly.
