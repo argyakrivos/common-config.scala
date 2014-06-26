@@ -84,6 +84,28 @@ package object config {
      */
     def getHttpUrl(path: String): URL = getUrl(path, "http", "https")
 
+    /**
+     * Gets an optional Boolean setting.
+     * @param path The path expression.
+     * @return The Boolean value at the requested path, if present.
+     */
+    def getBooleanOption(path: String): Option[Boolean] = if (config.hasPath(path)) Some(config.getBoolean(path)) else None
+
+    /**
+     * Gets an optional Int setting.
+     * @param path The path expression.
+     * @return The Int value at the requested path, if present.
+     */
+    def getIntOption(path: String): Option[Int] = if (config.hasPath(path)) Some(config.getInt(path)) else None
+
+
+    /**
+     * Gets an optional String setting.
+     * @param path The path expression.
+     * @return The String value at the requested path, if present.
+     */
+    def getStringOption(path: String): Option[String] = if (config.hasPath(path)) Some(config.getString(path)) else None
+
   }
 
 }
