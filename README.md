@@ -97,13 +97,20 @@ object MyApp extends App with Configuration {
 
 ## Logging
 
-All logging should be done in [GELF](http://graylog2.org/gelf) format, and in rig environments it is sent via UDP to the log server. To support this the library contains some [Logback](http://logback.qos.ch/) extensions which could be configured as follows:
+All logging should be done in [GELF](http://graylog2.org/gelf) format, and in rig environments it is sent via UDP to the log server. To support this the library contains some [Logback](http://logback.qos.ch/) extensions which can be automatically configured by mixing the `Loggers` trait into your app, e.g.
 
-~~~xml
-<appender name="UDP" class="com.blinkbox.books.logging.gelf.UdpAppender">
-  <layout class="com.blinkbox.books.logging.gelf.GelfLayout" />
-  <host>yourlogserver</host>
-</appender>
+~~~scala
+import com.blinkbox.books.config.Configuration
+import com.blinkbox.books.logging.Loggers
+import org.slf4j.MDC
+
+object MyApp extends App with Configuration with Loggers {
+  val log = LoggerFactory.getLogger(classOf[MyApp])
+  MDC.put("foo", "bar")   // add a filterable property to log messages
+  log.info("App started") // this will be logged as GELF over UDP
+}
 ~~~
 
-Any information placed in the [MDC](http://logback.qos.ch/manual/mdc.html) will be sent as properties in the log messages, which are very useful for filtering them. When using futures, ensure you look at the `DiagnosticExecutionContext` to ensure that MDC state is propagated correctly.
+To test the logging out on your machine, the easiest option is to vagrant up the [graylog-vagrant virtual machine](https://git.mobcastdev.com/ITOPS/graylog-vagrant).
+
+Any information placed in the [MDC](http://logback.qos.ch/manual/mdc.html) will be sent as properties in the log messages, which are very useful for filtering them. When using futures, ensure you wrap any execution contexts with `DiagnosticExecutionContext` to ensure that MDC state is propagated correctly.
