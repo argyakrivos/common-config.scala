@@ -1,5 +1,13 @@
 # Change Log
 
+## 0.6.1 ([#11](https://git.mobcastdev.com/Platform/common-config/pull/11) 2014-06-27 17:03:57)
+
+Added property to wire up Akka logger to SLF4J
+
+### Improvements
+
+- Akka loggers will be wired up to SLF4J by default.
+
 ## 0.6.0 ([#10](https://git.mobcastdev.com/Platform/common-config/pull/10) 2014-06-26 18:05:50)
 
 Added Loggers trait and updated some config
