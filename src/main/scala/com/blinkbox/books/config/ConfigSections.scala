@@ -11,8 +11,7 @@ case class AuthClientConfig(url: URL, keysDir: File) {
   val sessionUrl = new URL(url, "session")
 }
 case class DatabaseConfig(uri: URI)
-case class RabbitConfig(uri: URI)
-case class SwaggerConfig(baseUrl: URL, specPath: String, resourcePath: String)
+case class SwaggerConfig(baseUrl: URL, docsPath: String)
 
 object ApiConfig {
   def apply(config: Config, prefix: String): ApiConfig = ApiConfig(
@@ -32,13 +31,8 @@ object DatabaseConfig {
     config.getUri(s"$prefix.url"))
 }
 
-object RabbitConfig {
-  def apply(config: Config): RabbitConfig = RabbitConfig(config.getUri("rabbitmq.url", "amqp"))
-}
-
 object SwaggerConfig {
   def apply(config: Config, version: Int): SwaggerConfig = SwaggerConfig(
     config.getHttpUrl(s"swagger.v$version.baseUrl"),
-    config.getString(s"swagger.v$version.specPath"),
-    config.getString(s"swagger.v$version.resourcePath"))
+    config.getString(s"swagger.v$version.docsPath"))
 }

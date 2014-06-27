@@ -26,9 +26,4 @@ class ConfigSectionsTests extends FunSuite with Matchers with Configuration {
     assert(c.uri === new URI("mysql://guest:guest@localhost/mydb"))
   }
 
-  test("Load RabbitMQ config") {
-    val c = RabbitConfig(config)
-    assert(c.uri === new URI("amqp://guest:guest@localhost:5672"))
-  }
-
 }
