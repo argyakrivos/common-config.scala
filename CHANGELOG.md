@@ -1,5 +1,19 @@
 # Change Log
 
+## 0.6.0 ([#10](https://git.mobcastdev.com/Platform/common-config/pull/10) 2014-06-26 18:05:50)
+
+Added Loggers trait and updated some config
+
+### Breaking changes
+
+- `SwaggerConfig` now uses `docsPath` instead of `specPath` and `resourcePath` to reflect the changes made in the spray-swagger library.
+- `RabbitConfig` has been removed as that type has been moved into the rabbitmq-ha library.
+
+### New features
+
+- Added a `Loggers` trait which can be mixed into apps to configure the standard loggers.
+- Added some `getXxxOption` methods to the `Config` class to make it easier to use optional settings.
+
 ## 0.5.0 ([#9](https://git.mobcastdev.com/Platform/common-config/pull/9) 2014-06-23 17:04:24)
 
 Added a diagnostic execution context
