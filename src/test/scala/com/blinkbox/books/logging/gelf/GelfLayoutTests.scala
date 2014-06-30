@@ -3,6 +3,7 @@ package com.blinkbox.books.logging.gelf
 import ch.qos.logback.classic.{Level, LoggerContext}
 import ch.qos.logback.classic.spi.LoggingEvent
 import java.net.InetAddress
+import org.json4s.JsonAST.{JDecimal, JInt}
 import org.json4s.jackson.JsonMethods._
 import org.scalatest.{Matchers, FunSuite}
 import org.slf4j.MarkerFactory
@@ -72,6 +73,14 @@ class GelfLayoutTests extends FunSuite with Matchers {
     val json = layoutJson(event)
     assert((json \ "_foo").values == "bar")
     assert((json \ "_hello").values == "world")
+  }
+
+  test("Renders numeric MDC properties as numbers") {
+    val event = new LoggingEvent("TestClass", logger, Level.INFO, "test message", null, null)
+    event.setMDCPropertyMap(mapAsJavaMap(Map("foo" -> "123", "hello" -> "4.56")))
+    val json = layoutJson(event)
+    assert((json \ "_foo") == JInt(123))
+    assert((json \ "_hello") == JDecimal(4.56))
   }
 
   private def layout(event: LoggingEvent) = {

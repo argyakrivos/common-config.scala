@@ -6,13 +6,27 @@ import ch.qos.logback.classic.util.LevelToSyslogSeverity
 import ch.qos.logback.core.{CoreConstants, LayoutBase}
 import java.io.StringWriter
 import java.net.{InetAddress, NetworkInterface, UnknownHostException}
-import org.json4s.JsonAST.JDecimal
+import java.text.{NumberFormat, ParsePosition}
+import org.json4s.JsonAST.{JString, JDecimal}
 import org.json4s.JsonDSL._
 import org.json4s.jackson.JsonMethods._
 import scala.beans.BeanProperty
 import scala.collection.JavaConverters._
 
+private object NumberChecker {
+  private val numberFormat = new ThreadLocal[NumberFormat] {
+    override def initialValue() = NumberFormat.getNumberInstance
+  }
+  def isNumeric(s: String) = {
+    val pp = new ParsePosition(0)
+    numberFormat.get.parse(s, pp)
+    pp.getIndex == s.length && pp.getErrorIndex == -1
+  }
+}
+
 class GelfLayout extends LayoutBase[ILoggingEvent] {
+  import NumberChecker._
+
   private var shortMessageLayout: PatternLayout = null
   private var fullMessageLayout: PatternLayout = null
   private var exceptionLayout: PatternLayout = null
@@ -52,7 +66,11 @@ class GelfLayout extends LayoutBase[ILoggingEvent] {
     if (includeThreadName) json ~= ("_threadName", event.getThreadName)
     if (event.getMarker != null) json ~= ("_marker", event.getMarker.toString)
     callerData(event).foreach(json ~= _)
-    event.getMDCPropertyMap.asScala.foreach { case (k, v) => json ~= (s"_$k", v) }
+    event.getMDCPropertyMap.asScala.foreach {
+      // graylog only allows functions over numeric values so if this string looks like a number
+      // then turn it into one. unfortunately the original type information has been lost by now.
+      case (k, v) => json ~= (s"_$k", if (isNumeric(v)) JDecimal(BigDecimal(v)) else JString(v))
+    }
     exceptionData(event).foreach(json ~= _)
 
     val layout = new StringWriter(512)
