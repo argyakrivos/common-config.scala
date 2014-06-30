@@ -1,5 +1,13 @@
 # Change Log
 
+## 0.6.2 ([#12](https://git.mobcastdev.com/Platform/common-config/pull/12) 2014-06-30 10:31:15)
+
+Log numeric MDC values as numbers
+
+### Improvements
+
+- Numeric MDC values are logged as numbers rather than strings which allows Graylog to perform aggregates over them.
+
 ## 0.6.1 ([#11](https://git.mobcastdev.com/Platform/common-config/pull/11) 2014-06-27 17:03:57)
 
 Added property to wire up Akka logger to SLF4J
