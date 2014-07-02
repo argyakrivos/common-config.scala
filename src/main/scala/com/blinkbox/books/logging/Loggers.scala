@@ -1,7 +1,9 @@
 package com.blinkbox.books.logging
 
-import ch.qos.logback.classic.{Logger => ClassicLogger, LoggerContext}
+import ch.qos.logback.classic.{Level, Logger => ClassicLogger, LoggerContext}
 import ch.qos.logback.classic.spi.ILoggingEvent
+import ch.qos.logback.core.ConsoleAppender
+import ch.qos.logback.core.encoder.LayoutWrappingEncoder
 import com.blinkbox.books.config._
 import com.blinkbox.books.logging.gelf.{GelfLayout, UdpAppender}
 import org.slf4j.{Logger, LoggerFactory}
@@ -12,26 +14,45 @@ import org.slf4j.{Logger, LoggerFactory}
 trait Loggers {
   this: App with Configuration =>
 
-  private val context = LoggerFactory.getILoggerFactory.asInstanceOf[LoggerContext]
+  private val loggerContext = LoggerFactory.getILoggerFactory.asInstanceOf[LoggerContext]
 
-  private val layout = new GelfLayout
-  layout.facility = config.getString("graylog.gelf.facility")
-  config.getStringOption("graylog.gelf.shortMessagePattern").foreach(layout.shortMessagePattern = _)
-  config.getStringOption("graylog.gelf.fullMessagePattern").foreach(layout.fullMessagePattern = _)
-  config.getBooleanOption("graylog.gelf.includeLoggerName").foreach(layout.includeLoggerName = _)
-  config.getBooleanOption("graylog.gelf.includeThreadName").foreach(layout.includeThreadName = _)
-  layout.setContext(context)
-  layout.start()
+  private val gelfLayout = new GelfLayout
+  gelfLayout.facility = config.getString("logging.gelf.facility")
+  config.getStringOption("logging.gelf.shortMessagePattern").foreach(gelfLayout.shortMessagePattern = _)
+  config.getStringOption("logging.gelf.fullMessagePattern").foreach(gelfLayout.fullMessagePattern = _)
+  config.getBooleanOption("logging.gelf.includeLoggerName").foreach(gelfLayout.includeLoggerName = _)
+  config.getBooleanOption("logging.gelf.includeThreadName").foreach(gelfLayout.includeThreadName = _)
+  gelfLayout.setContext(loggerContext)
+  gelfLayout.start()
 
-  private val appender = new UdpAppender[ILoggingEvent]
-  appender.host = config.getString("graylog.udp.host")
-  config.getIntOption("graylog.udp.port").foreach(appender.port = _)
-  config.getIntOption("graylog.udp.maxChunkSize").foreach(appender.maxChunkSize = _)
-  appender.setLayout(layout)
-  appender.setContext(context)
-  appender.start()
+  private val udpAppender = new UdpAppender[ILoggingEvent]
+  udpAppender.setName("UDP")
+  udpAppender.host = config.getString("logging.udp.host")
+  config.getIntOption("logging.udp.port").foreach(udpAppender.port = _)
+  config.getIntOption("logging.udp.maxChunkSize").foreach(udpAppender.maxChunkSize = _)
+  udpAppender.setLayout(gelfLayout)
+  udpAppender.setContext(loggerContext)
+  udpAppender.start()
 
-  private val logger = LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME).asInstanceOf[ClassicLogger]
-  logger.detachAndStopAllAppenders()
-  logger.addAppender(appender)
+  private lazy val consoleAppender = {
+    val encoder = new LayoutWrappingEncoder[ILoggingEvent]
+    encoder.init(System.out)
+    encoder.setImmediateFlush(true)
+    encoder.setLayout(gelfLayout)
+    encoder.setContext(loggerContext)
+    encoder.start()
+
+    val appender = new ConsoleAppender[ILoggingEvent]
+    appender.setName("CONSOLE")
+    appender.setEncoder(encoder)
+    appender.setContext(loggerContext)
+    appender.start()
+    appender
+  }
+
+  private val rootLogger = LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME).asInstanceOf[ClassicLogger]
+  rootLogger.setLevel(Level.toLevel(config.getStringOption("logging.level").getOrElse(null)))
+  rootLogger.detachAndStopAllAppenders()
+  rootLogger.addAppender(udpAppender)
+  config.getBooleanOption("logging.console.enabled").foreach(if (_) rootLogger.addAppender(consoleAppender))
 }
