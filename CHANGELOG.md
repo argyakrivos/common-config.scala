@@ -1,5 +1,22 @@
 # Change Log
 
+## 0.7.0 ([#13](https://git.mobcastdev.com/Platform/common-config/pull/13) 2014-07-01 13:27:06)
+
+Added ability to set log level and log to console
+
+### Breaking changes
+
+- The configuration property names now start with `logging.` rather
+than `graylog.`, as the latter didn’t make sense in all contexts (e.g.
+level, console).
+
+### New features
+
+- You can now set the logging level with the `logging.level`
+configuration property.
+- You can now log to the console (stdout) by setting
+`logging.console.enabled=true`.
+
 ## 0.6.2 ([#12](https://git.mobcastdev.com/Platform/common-config/pull/12) 2014-06-30 10:31:15)
 
 Log numeric MDC values as numbers
