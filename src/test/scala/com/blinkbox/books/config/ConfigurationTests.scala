@@ -56,7 +56,7 @@ class ConfigurationTests extends FunSuite with BeforeAndAfterEach with Matchers 
   test("Get MapOption") {
     setConfigUrl(Some(resourceFile("testing.conf")))
     val config = loadTestConfig
-    val map = config.getMapOption("map").get
+    val map = config.getConfigObjectOption("map").get
     assert( "value1" == map.get("key1").unwrapped())
     assert( "value2" == map.get("key2").unwrapped())
   }

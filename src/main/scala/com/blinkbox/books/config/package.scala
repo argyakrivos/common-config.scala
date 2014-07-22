@@ -120,7 +120,7 @@ package object config {
      * @param path The path expression.
      * @return The Map object at the requested path, if present.
      */
-    def getMapOption(path: String): Option[ConfigObject] = if (config.hasPath(path)) Some(config.getObject(path)) else None
+    def getConfigObjectOption(path: String): Option[ConfigObject] = if (config.hasPath(path)) Some(config.getObject(path)) else None
 
   }
 
