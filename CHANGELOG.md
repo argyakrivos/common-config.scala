@@ -1,5 +1,12 @@
 # Change Log
 
+## 0.7.1 ([#14](https://git.mobcastdev.com/Platform/common-config/pull/14) 2014-07-22 08:59:35)
+
+CP-1567: Added getListOption function
+
+improvement
+added getListOption function 
+
 ## 0.7.0 ([#13](https://git.mobcastdev.com/Platform/common-config/pull/13) 2014-07-01 13:27:06)
 
 Added ability to set log level and log to console
