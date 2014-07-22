@@ -1,10 +1,11 @@
 package com.blinkbox.books
 
-import com.typesafe.config.{ConfigObject, Config}
+import com.typesafe.config.{ConfigValue, ConfigObject, Config}
 import com.typesafe.config.ConfigException.BadValue
 import java.io.File
 import java.net.{URISyntaxException, URI, MalformedURLException, URL}
 import scala.collection.JavaConverters.iterableAsScalaIterableConverter
+import scala.collection.JavaConverters._
 
 
 /**
@@ -114,6 +115,14 @@ package object config {
      * @return The list of ConfigObjects at the requested path, if present.
      */
     def getListOption(path: String): Option[List[ConfigObject]] = if (config.hasPath(path)) Some(config.getObjectList(path).asScala.toList) else None
+
+    /**
+     * Gets an optional Map object
+     * @param path The path expression.
+     * @return The Map object at the requested path, if present.
+     */
+    def getMapOption(path: String): Option[Map[String, AnyRef]] = if (config.hasPath(path)) Some(config.getConfig(path).entrySet().asScala.flatten(
+    f => List((f.getKey, f.getValue.unwrapped()))).toMap[String, AnyRef]) else None
 
   }
 
