@@ -5,7 +5,6 @@ import com.typesafe.config.ConfigException.BadValue
 import java.io.File
 import java.net.{URISyntaxException, URI, MalformedURLException, URL}
 import scala.collection.JavaConverters.iterableAsScalaIterableConverter
-import scala.collection.JavaConverters._
 
 
 /**
