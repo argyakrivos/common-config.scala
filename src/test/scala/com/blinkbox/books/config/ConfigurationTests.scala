@@ -1,5 +1,6 @@
 package com.blinkbox.books.config
 
+import com.blinkbox.books.config
 import com.typesafe.config.ConfigFactory
 import java.io.File
 import org.scalatest.{BeforeAndAfterEach, FunSuite, Matchers}
@@ -50,6 +51,14 @@ class ConfigurationTests extends FunSuite with BeforeAndAfterEach with Matchers 
     System.setProperty("testing.conf.test", "overridden!")
     val config = loadTestConfig
     config.getString("testing.conf.test") should be("overridden!")
+  }
+
+  test("GetConfigObjectOption") {
+    setConfigUrl(Some(resourceFile("testing.conf")))
+    val config = loadTestConfig
+    val map = config.getConfigObjectOption("map").get
+    assert( "value1" == map.get("key1").unwrapped())
+    assert( "value2" == map.get("key2").unwrapped())
   }
 
   // TODO: Could test HTTP loading using URLStreamHandlerFactory, but is it worth the effort?
