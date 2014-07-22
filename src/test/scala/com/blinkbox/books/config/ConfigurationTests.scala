@@ -57,8 +57,8 @@ class ConfigurationTests extends FunSuite with BeforeAndAfterEach with Matchers 
     setConfigUrl(Some(resourceFile("testing.conf")))
     val config = loadTestConfig
     val map = config.getMapOption("map").get
-    assert( "value1" == map.get("key1").get.unwrapped())
-    assert( "value2" == map.get("key2").get.unwrapped())
+    assert( "value1" == map.get("key1").unwrapped())
+    assert( "value2" == map.get("key2").unwrapped())
   }
 
   // TODO: Could test HTTP loading using URLStreamHandlerFactory, but is it worth the effort?

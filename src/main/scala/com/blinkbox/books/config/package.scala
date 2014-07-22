@@ -120,8 +120,7 @@ package object config {
      * @param path The path expression.
      * @return The Map object at the requested path, if present.
      */
-    def getMapOption(path: String): Option[Map[String, ConfigValue]] = if (config.hasPath(path)) Some(config.getConfig(path).entrySet().asScala.flatten(
-    f => List((f.getKey, f.getValue))).toMap[String, ConfigValue]) else None
+    def getMapOption(path: String): Option[ConfigObject] = if (config.hasPath(path)) Some(config.getObject(path)) else None
 
   }
 
