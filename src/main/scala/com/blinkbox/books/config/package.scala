@@ -1,12 +1,10 @@
 package com.blinkbox.books
 
-import java.util
-
 import com.typesafe.config.{ConfigObject, Config}
 import com.typesafe.config.ConfigException.BadValue
 import java.io.File
 import java.net.{URISyntaxException, URI, MalformedURLException, URL}
-import scala.collection.JavaConverters._
+import scala.collection.JavaConverters.iterableAsScalaIterableConverter
 
 
 /**
