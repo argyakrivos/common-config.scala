@@ -53,7 +53,7 @@ class ConfigurationTests extends FunSuite with BeforeAndAfterEach with Matchers 
     config.getString("testing.conf.test") should be("overridden!")
   }
 
-  test("Get MapOption") {
+  test("GetConfigObjectOption") {
     setConfigUrl(Some(resourceFile("testing.conf")))
     val config = loadTestConfig
     val map = config.getConfigObjectOption("map").get

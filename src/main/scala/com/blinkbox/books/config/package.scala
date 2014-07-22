@@ -116,9 +116,9 @@ package object config {
     def getListOption(path: String): Option[List[ConfigObject]] = if (config.hasPath(path)) Some(config.getObjectList(path).asScala.toList) else None
 
     /**
-     * Gets an optional Map of String, ConfigValue object
+     * Gets an optional ConfigObject
      * @param path The path expression.
-     * @return The Map object at the requested path, if present.
+     * @return The ConfigObject at the requested path, if present.
      */
     def getConfigObjectOption(path: String): Option[ConfigObject] = if (config.hasPath(path)) Some(config.getObject(path)) else None
 
