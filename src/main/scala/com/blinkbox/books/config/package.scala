@@ -1,9 +1,13 @@
 package com.blinkbox.books
 
-import com.typesafe.config.Config
+import java.util
+
+import com.typesafe.config.{ConfigObject, Config}
 import com.typesafe.config.ConfigException.BadValue
 import java.io.File
 import java.net.{URISyntaxException, URI, MalformedURLException, URL}
+import scala.collection.JavaConverters._
+
 
 /**
  * Provides classes to help with configuring applications.
@@ -105,6 +109,13 @@ package object config {
      * @return The String value at the requested path, if present.
      */
     def getStringOption(path: String): Option[String] = if (config.hasPath(path)) Some(config.getString(path)) else None
+
+    /**
+     * Gets an optional ConfigObject list.
+     * @param path The path expression.
+     * @return The list of ConfigObjects at the requested path, if present.
+     */
+    def getListOption(path: String): Option[List[ConfigObject]] = if (config.hasPath(path)) Some(config.getObjectList(path).asScala.toList) else None
 
   }
 
