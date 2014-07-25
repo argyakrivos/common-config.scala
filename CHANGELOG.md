@@ -1,5 +1,16 @@
 # Change Log
 
+## 0.8.0 ([#15](https://git.mobcastdev.com/Platform/common-config/pull/15) 2014-07-25 13:18:15)
+
+Now makes it easier to log with temporary MDC
+
+### New features
+
+- Added a `withContext` method to `Logger` so that it’s easy to log
+with MDC that only applies to a particular set of logging statements.
+- Now references the `com.typesafe.scalalogging` package so you can use
+`with Logging` on classes rather than having to use `LoggerFactory`.
+
 ## 0.7.1 ([#14](https://git.mobcastdev.com/Platform/common-config/pull/14) 2014-07-22 08:59:35)
 
 CP-1567: Added getListOption function
