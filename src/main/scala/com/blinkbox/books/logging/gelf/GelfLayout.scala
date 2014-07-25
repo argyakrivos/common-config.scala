@@ -12,6 +12,7 @@ import org.json4s.JsonDSL._
 import org.json4s.jackson.JsonMethods._
 import scala.beans.BeanProperty
 import scala.collection.JavaConverters._
+import scala.collection.mutable
 
 private object NumberChecker {
   private val numberFormat = new ThreadLocal[NumberFormat] {
@@ -53,12 +54,14 @@ class GelfLayout extends LayoutBase[ILoggingEvent] {
   }
 
   override def doLayout(event: ILoggingEvent): String = {
+    val mdc = event.getMDCPropertyMap.asScala
+
     var json =
       ("version" -> "1.1") ~
       ("host" -> hostName) ~
       ("short_message" -> shortMessageLayout.doLayout(event)) ~
       ("full_message" -> fullMessageLayout.doLayout(event)) ~
-      ("timestamp" -> JDecimal(BigDecimal(event.getTimeStamp) / 1000)) ~
+      ("timestamp" -> JDecimal(BigDecimal(timestamp(event, mdc)) / 1000)) ~
       ("level" -> LevelToSyslogSeverity.convert(event))
 
     if (facility != null) json ~= ("_facility", facility)
@@ -66,9 +69,10 @@ class GelfLayout extends LayoutBase[ILoggingEvent] {
     if (includeThreadName) json ~= ("_threadName", event.getThreadName)
     if (event.getMarker != null) json ~= ("_marker", event.getMarker.toString)
     callerData(event).foreach(json ~= _)
-    event.getMDCPropertyMap.asScala.foreach {
+    mdc.foreach {
       // graylog only allows functions over numeric values so if this string looks like a number
       // then turn it into one. unfortunately the original type information has been lost by now.
+      case ("timestamp", v) if isNumeric(v) => // ignore this; it was used as the message timestamp
       case (k, v) => json ~= (s"_$k", if (isNumeric(v)) JDecimal(BigDecimal(v)) else JString(v))
     }
     exceptionData(event).foreach(json ~= _)
@@ -78,6 +82,14 @@ class GelfLayout extends LayoutBase[ILoggingEvent] {
     layout.write(CoreConstants.LINE_SEPARATOR)
     layout.toString
   }
+
+  // some events are logged at the end of a process, but we want the timestamp of the event to reflect
+  // the start of the process, so we let applications override the event timestamp in the MDC
+  def timestamp(event: ILoggingEvent, mdc: mutable.Map[String, String]): Long =
+    mdc.get("timestamp") match {
+      case Some(ts) if isNumeric(ts) => ts.toLong
+      case _ => event.getTimeStamp
+    }
 
   private def lookupHostName: String =
     try InetAddress.getLocalHost.getHostName
