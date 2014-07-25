@@ -51,7 +51,7 @@ trait Loggers {
   }
 
   private val rootLogger = LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME).asInstanceOf[ClassicLogger]
-  rootLogger.setLevel(Level.toLevel(config.getStringOption("logging.level").getOrElse(null)))
+  rootLogger.setLevel(Level.toLevel(config.getStringOption("logging.level").orNull))
   rootLogger.detachAndStopAllAppenders()
   rootLogger.addAppender(udpAppender)
   config.getBooleanOption("logging.console.enabled").foreach(if (_) rootLogger.addAppender(consoleAppender))
