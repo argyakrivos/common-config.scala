@@ -71,7 +71,7 @@ class GelfLayoutTests extends FunSuite with Matchers {
 
   test("Includes MDC properties as additional fields") {
     val event = new LoggingEvent("TestClass", logger, Level.INFO, "test message", null, null)
-    event.setMDCPropertyMap(mapAsJavaMap(Map("foo" -> "bar", "hello" -> "world")))
+    event.setMDCPropertyMap(Map("foo" -> "bar", "hello" -> "world").asJava)
     val json = layoutJson(event)
     assert((json \ "_foo").values == "bar")
     assert((json \ "_hello").values == "world")
@@ -79,7 +79,7 @@ class GelfLayoutTests extends FunSuite with Matchers {
 
   test("Renders numeric MDC properties as numbers") {
     val event = new LoggingEvent("TestClass", logger, Level.INFO, "test message", null, null)
-    event.setMDCPropertyMap(mapAsJavaMap(Map("foo" -> "123", "hello" -> "4.56")))
+    event.setMDCPropertyMap(Map("foo" -> "123", "hello" -> "4.56").asJava)
     val json = layoutJson(event)
     assert((json \ "_foo") == JInt(123))
     assert((json \ "_hello") == JDecimal(4.56))
@@ -87,7 +87,7 @@ class GelfLayoutTests extends FunSuite with Matchers {
 
   test("Allows the timestamp to be overridden using the 'timestamp' MDC property") {
     val event = new LoggingEvent("TestClass", logger, Level.INFO, "test message", null, null)
-    event.setMDCPropertyMap(mapAsJavaMap(Map("timestamp" -> "1406300201")))
+    event.setMDCPropertyMap(Map("timestamp" -> "1406300201").asJava)
     val json = layoutJson(event)
     assert((json \ "timestamp").values == BigDecimal(1406300201) / 1000)
   }
