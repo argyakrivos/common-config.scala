@@ -100,16 +100,25 @@ object MyApp extends App with Configuration {
 All logging should be done in [GELF](http://graylog2.org/gelf) format, and in rig environments it is sent via UDP to the log server. To support this the library contains some [Logback](http://logback.qos.ch/) extensions which can be automatically configured by mixing the `Loggers` trait into your app, e.g.
 
 ~~~scala
-import com.blinkbox.books.config.Configuration
-import com.blinkbox.books.logging.Loggers
+import com.blinkbox.books.config._
+import com.blinkbox.books.logging._
 import org.slf4j.MDC
 
-object MyApp extends App with Configuration with Loggers {
-  val log = LoggerFactory.getLogger(classOf[MyApp])
-  MDC.put("foo", "bar")   // add a filterable property to log messages
-  log.info("App started") // this will be logged as GELF over UDP
+object MyApp extends App with Configuration with Loggers with Logging {
+  MDC.put("foo", "bar")      // add a filterable property to log messages
+  logger.info("App started") // this will be logged as GELF over UDP
 }
 ~~~
+
+If the MDC context only applies to the particular logging call, and not to subsequent calls, then you can scope the MDC as follows:
+
+~~~scala
+object MyApp extends App with Configuration with Loggers with Logging {
+  logger.withContext("foo" -> "bar")(_.info("App started"))
+}
+~~~
+
+If you log an MDC property named `timestamp` containing a UNIX timestamp then it will override the timestamp that the event is reported with. This can be useful for processes where you want to record the event at the start time rather than the finish time. You should only use this for short-running processes, maximum around 10 seconds, to ensure that it doesn't cause problems in the aggregating servers with significantly out-of-order events.
 
 To test the logging out on your machine, the easiest option is to vagrant up the [graylog-vagrant virtual machine](https://git.mobcastdev.com/ITOPS/graylog-vagrant).
 
