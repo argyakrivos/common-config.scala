@@ -1,13 +1,15 @@
 package com.blinkbox.books.logging.gelf
 
+import java.net.InetAddress
+
 import ch.qos.logback.classic.spi.LoggingEvent
 import ch.qos.logback.classic.{Level, LoggerContext}
-import java.net.InetAddress
 import org.json4s.JsonAST.{JDecimal, JInt}
 import org.json4s.jackson.JsonMethods._
 import org.scalatest.{FunSuite, Matchers}
 import org.slf4j.MarkerFactory
-import scala.collection.JavaConversions._
+
+import scala.collection.JavaConverters._
 import scala.util.Random
 
 class GelfLayoutTests extends FunSuite with Matchers {
@@ -92,21 +94,21 @@ class GelfLayoutTests extends FunSuite with Matchers {
 
   test("Uses the event's timestamp if the 'timestamp' MDC property isn't a UNIX timestamp") {
     val event = new LoggingEvent("TestClass", logger, Level.INFO, "test message", null, null)
-    event.setMDCPropertyMap(mapAsJavaMap(Map("timestamp" -> "wibble")))
+    event.setMDCPropertyMap(Map("timestamp" -> "wibble").asJava)
     val json = layoutJson(event)
     assert((json \ "timestamp").values == BigDecimal(event.getTimeStamp) / 1000)
   }
 
   test("Does not render the 'timestamp' MDC property in the additional fields if it is a UNIX timestamp") {
     val event = new LoggingEvent("TestClass", logger, Level.INFO, "test message", null, null)
-    event.setMDCPropertyMap(mapAsJavaMap(Map("timestamp" -> "1406300201")))
+    event.setMDCPropertyMap(Map("timestamp" -> "1406300201").asJava)
     val json = layoutJson(event)
     assert((json \ "_timestamp").values == None)
   }
 
   test("Renders the 'timestamp' MDC property in the additional fields if it isn't a UNIX timestamp") {
     val event = new LoggingEvent("TestClass", logger, Level.INFO, "test message", null, null)
-    event.setMDCPropertyMap(mapAsJavaMap(Map("timestamp" -> "wibble")))
+    event.setMDCPropertyMap(Map("timestamp" -> "wibble").asJava)
     val json = layoutJson(event)
     assert((json \ "_timestamp").values == "wibble")
   }
