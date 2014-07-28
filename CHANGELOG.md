@@ -1,5 +1,14 @@
 # Change Log
 
+## 0.9.0 ([#16](https://git.mobcastdev.com/Platform/common-config/pull/16) 2014-07-25 15:08:51)
+
+Added ability to override event timestamp
+
+### New features
+
+- Can now set a `timestamp` property in MDC to a UNIX timestamp to
+override the timestamp of logging events.
+
 ## 0.8.0 ([#15](https://git.mobcastdev.com/Platform/common-config/pull/15) 2014-07-25 13:18:15)
 
 Now makes it easier to log with temporary MDC
