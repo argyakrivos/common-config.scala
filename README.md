@@ -102,9 +102,10 @@ All logging should be done in [GELF](http://graylog2.org/gelf) format, and in ri
 ~~~scala
 import com.blinkbox.books.config._
 import com.blinkbox.books.logging._
+import com.typesafe.scalalogging.slf4j.StrictLogging
 import org.slf4j.MDC
 
-object MyApp extends App with Configuration with Loggers with Logging {
+object MyApp extends App with Configuration with Loggers with StrictLogging {
   MDC.put("foo", "bar")      // add a filterable property to log messages
   logger.info("App started") // this will be logged as GELF over UDP
 }
