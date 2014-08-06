@@ -1,6 +1,6 @@
 # Change Log
 
-## 2.0.0 ([#20](https://git.mobcastdev.com/Platform/common-config/pull/20) 2014-08-06 15:46:56)
+## 1.0.0 ([#20](https://git.mobcastdev.com/Platform/common-config/pull/20) 2014-08-06 15:46:56)
 
 Bumped Major version
 
