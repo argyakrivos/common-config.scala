@@ -1,5 +1,13 @@
 # Change Log
 
+## 0.10.1 ([#19](https://git.mobcastdev.com/Platform/common-config/pull/19) 2014-08-06 15:31:32)
+
+Updated README
+
+### Improvements
+
+* Updated README
+
 ## 0.10.0 ([#17](https://git.mobcastdev.com/Platform/common-config/pull/17) 2014-08-06 14:26:40)
 
 Upgraded to scala-logging-slf4j 2.1.2
