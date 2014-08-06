@@ -1,5 +1,14 @@
 # Change Log
 
+## 0.10.0 ([#17](https://git.mobcastdev.com/Platform/common-config/pull/17) 2014-08-06 14:26:40)
+
+Upgraded to scala-logging-slf4j 2.1.2
+
+### Breaking changes
+
+* It seems that scalalogging-slf4j is no more... they just added a dash and it's now scala-logging-slf4j!
+* Bumped to the latest version
+
 ## 0.9.0 ([#16](https://git.mobcastdev.com/Platform/common-config/pull/16) 2014-07-25 15:08:51)
 
 Added ability to override event timestamp
