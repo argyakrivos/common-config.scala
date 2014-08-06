@@ -5,7 +5,7 @@ import java.util.concurrent.atomic.AtomicReference
 import ch.qos.logback.classic.spi.ILoggingEvent
 import ch.qos.logback.classic.{Logger => ClassicLogger}
 import ch.qos.logback.core.Appender
-import com.typesafe.scalalogging.slf4j.Logging
+import com.typesafe.scalalogging.slf4j.StrictLogging
 import org.mockito.Matchers._
 import org.mockito.Mockito._
 import org.mockito.invocation.InvocationOnMock
@@ -14,7 +14,7 @@ import org.scalatest.FunSuite
 import org.scalatest.mock.MockitoSugar
 import org.slf4j.{Logger => Slf4jLogger, LoggerFactory => Slf4jLoggerFactory}
 
-class WithContextTests extends FunSuite with MockitoSugar with Logging {
+class WithContextTests extends FunSuite with MockitoSugar with StrictLogging {
 
   test("logger.withContext sets the context only within the passed block") {
     val mdcRef1 = new AtomicReference[Option[java.util.Map[String, String]]](None)

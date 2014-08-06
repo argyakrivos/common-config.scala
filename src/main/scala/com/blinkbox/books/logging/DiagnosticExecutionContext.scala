@@ -55,5 +55,5 @@ private class ChainedDiagnosticExecutionContext(delegate: ExecutionContext) exte
 
   override def reportFailure(t: Throwable) = delegate.reportFailure(t)
 
-  private def setMDC(mdc: java.util.Map[_, _]): Unit = if (mdc == null) MDC.clear() else MDC.setContextMap(mdc)
+  private def setMDC(mdc: java.util.Map[String, String]): Unit = if (mdc == null) MDC.clear() else MDC.setContextMap(mdc)
 }
