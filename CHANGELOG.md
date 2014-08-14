@@ -1,5 +1,14 @@
 # Change Log
 
+## 1.0.1 ([#21](https://git.mobcastdev.com/Platform/common-config/pull/21) 2014-08-14 17:43:13)
+
+DatabaseConfig
+
+### Improvements
+
+* Added some extra fields for DatabaseConfig
+* Handling db config errors properly
+
 ## 1.0.0 ([#20](https://git.mobcastdev.com/Platform/common-config/pull/20) 2014-08-06 15:46:56)
 
 Bumped Major version
