@@ -1,5 +1,14 @@
 # Change Log
 
+## 1.0.2 ([#22](https://git.mobcastdev.com/Platform/common-config/pull/22) 2014-08-29 14:44:17)
+
+Cross compile to Scala 2.11
+
+### Improvements
+
+- Now cross-compiles to Scala 2.11.
+- Updated dependencies to latest versions.
+
 ## 1.0.1 ([#21](https://git.mobcastdev.com/Platform/common-config/pull/21) 2014-08-14 17:43:13)
 
 DatabaseConfig
