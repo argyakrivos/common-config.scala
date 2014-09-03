@@ -5,6 +5,8 @@ import com.typesafe.config.ConfigException.BadValue
 import java.io.File
 import java.net.{URISyntaxException, URI, MalformedURLException, URL}
 import scala.collection.JavaConverters.iterableAsScalaIterableConverter
+import scala.concurrent.duration._
+import java.util.concurrent.TimeUnit
 
 
 /**
@@ -122,6 +124,20 @@ package object config {
      */
     def getConfigObjectOption(path: String): Option[ConfigObject] = if (config.hasPath(path)) Some(config.getObject(path)) else None
 
+    /**
+     * Gets a FiniteDuration out of a typesafe config duration
+     * @param path The path expression.
+     * @return The FiniteDuration at the requested path.
+     */
+    def getFiniteDuration(path: String): FiniteDuration = config.getDuration(path, TimeUnit.MILLISECONDS).millis
+
+    /**
+     * Gets an optional FiniteDuration out of a typesafe config duration
+     * @param path The path expression.
+     * @return The FiniteDuration at the requested path, if present.
+     */
+    def getFiniteDurationOption(path: String): Option[FiniteDuration] =
+      if (config.hasPath(path)) Some(getFiniteDuration(path)) else None
   }
 
 }
