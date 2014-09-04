@@ -1,5 +1,13 @@
 # Change Log
 
+## 1.1.0 ([#23](https://git.mobcastdev.com/Platform/common-config/pull/23) 2014-09-03 15:04:58)
+
+Introduce FiniteDuration configuration extractors
+
+### New Feature
+
+- Added a `getFiniteDuration` method to the configuration object.
+
 ## 1.0.2 ([#22](https://git.mobcastdev.com/Platform/common-config/pull/22) 2014-08-29 14:44:17)
 
 Cross compile to Scala 2.11
