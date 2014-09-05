@@ -1,5 +1,15 @@
 # Change Log
 
+## 1.2.0 ([#24](https://git.mobcastdev.com/Platform/common-config/pull/24) 2014-09-04 18:02:39)
+
+Console output in readable format
+
+### New Feature
+
+- `console.pattern` setting to enable log output in more readable format. 
+- `console.pattern: simple` outputs log messages in a default format.
+- The output pattern can be customised: `console.pattern: "%-5level [%thread]: %message%n"`
+
 ## 1.1.0 ([#23](https://git.mobcastdev.com/Platform/common-config/pull/23) 2014-09-03 15:04:58)
 
 Introduce FiniteDuration configuration extractors
