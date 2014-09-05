@@ -1,7 +1,7 @@
 package com.blinkbox.books.logging
 
-import ch.qos.logback.classic.{Level, Logger => ClassicLogger, LoggerContext}
 import ch.qos.logback.classic.spi.ILoggingEvent
+import ch.qos.logback.classic.{Level, LoggerContext, PatternLayout, Logger => ClassicLogger}
 import ch.qos.logback.core.ConsoleAppender
 import ch.qos.logback.core.encoder.LayoutWrappingEncoder
 import com.blinkbox.books.config._
@@ -38,7 +38,17 @@ trait Loggers {
     val encoder = new LayoutWrappingEncoder[ILoggingEvent]
     encoder.init(System.out)
     encoder.setImmediateFlush(true)
-    encoder.setLayout(gelfLayout)
+
+    val consoleLayout = config.getStringOption("logging.console.pattern").map { pattern =>
+      val patternLayout = new PatternLayout
+      if (pattern == "simple")
+        patternLayout.setPattern("%date{dd/MM HH:mm:ss.SSS} [%thread] %-5level %c{20}.%method:%line - %msg%n")
+      else patternLayout.setPattern(pattern)
+      patternLayout.setContext(loggerContext)
+      patternLayout.start()
+      patternLayout
+    }.getOrElse(gelfLayout)
+    encoder.setLayout(consoleLayout)
     encoder.setContext(loggerContext)
     encoder.start()
 
