@@ -14,5 +14,4 @@ class LoggersTests extends FunSuite {
   test("An app can be created with the loggers") {
     new TestApp
   }
-
 }

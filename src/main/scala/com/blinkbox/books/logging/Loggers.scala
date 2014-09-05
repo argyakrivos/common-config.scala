@@ -41,10 +41,8 @@ trait Loggers {
 
     val consoleLayout = config.getStringOption("logging.console.pattern").map { pattern =>
       val patternLayout = new PatternLayout
-      if (pattern == "simple") {
-        val default = "%date{dd/MM HH:mm:ss.SSS} [%thread] %-5level %c{20}.%method:%line - %msg%n"
-        patternLayout.setPattern(default)
-      }
+      if (pattern == "simple")
+        patternLayout.setPattern("%date{dd/MM HH:mm:ss.SSS} [%thread] %-5level %c{20}.%method:%line - %msg%n")
       else patternLayout.setPattern(pattern)
       patternLayout.setContext(loggerContext)
       patternLayout.start()
