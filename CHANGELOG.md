@@ -1,5 +1,15 @@
 # Change Log
 
+## 1.2.1 ([#25](https://git.mobcastdev.com/Platform/common-config/pull/25) 2014-09-08 09:55:51)
+
+Now resolves config placeholders.
+
+### Bug fixes
+
+- Now calls `resolve` on the loaded configuration which performs
+substitution on `${…}` values. Without this you’d get an exception
+about unresolved values if these were used.
+
 ## 1.2.0 ([#24](https://git.mobcastdev.com/Platform/common-config/pull/24) 2014-09-04 18:02:39)
 
 Console output in readable format
