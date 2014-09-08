@@ -10,7 +10,7 @@ trait Configuration {
   private val parseOptions = ConfigParseOptions.defaults().setAllowMissing(false)
 
   /** The loaded configuration. */
-  implicit val config: Config = loadConfig
+  implicit val config: Config = loadConfig.resolve
 
   private def loadConfig = {
     val local = ConfigFactory.load
