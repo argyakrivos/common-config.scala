@@ -2,6 +2,7 @@ package com.blinkbox.books.config
 
 import java.io.File
 import java.net.{URI, URL}
+import java.security.Security
 import java.util.concurrent.TimeUnit
 
 import com.typesafe.config.Config
@@ -30,6 +31,11 @@ case class DatabaseConfig(uri: URI) {
   val jdbcUrl = s"jdbc:${uri.getScheme}://$host${port.map(":" + _).getOrElse("")}/$db${dbProperties.map("?" + _).getOrElse("")}"
 }
 case class SwaggerConfig(baseUrl: URL, docsPath: String)
+case class JvmConfig(dnsCacheTtl: FiniteDuration) {
+  def setProperties(): Unit = {
+    Security.setProperty("networkaddress.cache.ttl", dnsCacheTtl.toSeconds.toString)
+  }
+}
 
 object ApiConfig {
   def apply(config: Config, prefix: String): ApiConfig = ApiConfig(
@@ -53,4 +59,8 @@ object SwaggerConfig {
   def apply(config: Config, version: Int): SwaggerConfig = SwaggerConfig(
     config.getHttpUrl(s"swagger.v$version.baseUrl"),
     config.getString(s"swagger.v$version.docsPath"))
+}
+
+object JvmConfig {
+  def apply(config: Config, prefix: String = "jvm"): JvmConfig = JvmConfig(config.getFiniteDuration(s"$prefix.dnsCacheTtl"))
 }
