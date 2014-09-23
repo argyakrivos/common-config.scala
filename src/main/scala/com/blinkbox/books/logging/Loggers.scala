@@ -67,8 +67,8 @@ trait Loggers {
   config.getBooleanOption("logging.console.enabled").foreach(if (_) rootLogger.addAppender(consoleAppender))
 
   config.getListOption("logging.loggers").foreach { l =>
-    l.foreach { conf =>
-      loggerContext.getLogger(conf.get("name").render()).setLevel(Level.toLevel(conf.get("level").render()))
+    l.map(_.toConfig).foreach { c =>
+      loggerContext.getLogger(c.getString("name")).setLevel(Level.toLevel(c.getString("level")))
     }
   }
 }
