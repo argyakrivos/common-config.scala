@@ -65,4 +65,10 @@ trait Loggers {
   rootLogger.detachAndStopAllAppenders()
   rootLogger.addAppender(udpAppender)
   config.getBooleanOption("logging.console.enabled").foreach(if (_) rootLogger.addAppender(consoleAppender))
+
+  config.getListOption("logging.loggers").foreach { l =>
+    l.foreach { conf =>
+      loggerContext.getLogger(conf.get("name").render()).setLevel(Level.toLevel(conf.get("level").render()))
+    }
+  }
 }
