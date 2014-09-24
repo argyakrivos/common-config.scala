@@ -21,6 +21,7 @@ project/plugins/project/
 .DS_Store
 *.sc
 .idea
+.idea_modules
 
 # Other
 /bin
