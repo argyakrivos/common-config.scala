@@ -14,10 +14,13 @@ trait Configuration {
 
   private def loadConfig = {
     val local = ConfigFactory.load
-    loadExternalConfig match {
+    val merged = loadExternalConfig match {
       case Some(external) => ConfigFactory.defaultOverrides.withFallback(external).withFallback(local)
       case None => local
     }
+
+    JvmConfig(merged)
+    merged.withoutPath("jvm")
   }
 
   private def loadExternalConfig: Option[Config] =

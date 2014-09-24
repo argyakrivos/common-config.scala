@@ -2,6 +2,7 @@ package com.blinkbox.books.config
 
 import java.io.File
 import java.net.{URI, URL}
+import java.security.Security
 import java.util.concurrent.TimeUnit
 
 import com.typesafe.config.Config
@@ -53,4 +54,10 @@ object SwaggerConfig {
   def apply(config: Config, version: Int): SwaggerConfig = SwaggerConfig(
     config.getHttpUrl(s"swagger.v$version.baseUrl"),
     config.getString(s"swagger.v$version.docsPath"))
+}
+
+object JvmConfig {
+  def apply(config: Config): Unit = {
+    config.getFiniteDurationOption("jvm.dnsCacheTtl").foreach(d => Security.setProperty("networkaddress.cache.ttl", d.toSeconds.toString))
+  }
 }
