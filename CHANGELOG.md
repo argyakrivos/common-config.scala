@@ -1,5 +1,26 @@
 # Change Log
 
+## 1.3.0 ([#27](https://git.mobcastdev.com/Platform/common-config/pull/27) 2014-09-23 13:55:36)
+
+Introduce level configuration for specific loggers
+
+### New feature
+
+It is now possible to configure log levels for a specific logger; as an example the following setting with the `logback.xml` file:
+
+    <logger name="scala.slick" level="INFO" />
+    <logger name="scala.slick.jdbc.JdbcBackend.statement" level="DEBUG" />
+    <logger name="com.zaxxer.hikari.pool.HikariPool" level="INFO" />
+
+would translate to the following in `application.conf`:
+
+    logging.loggers [
+      { name: scala.slick, level: INFO }
+      { name: scala.slick.jdbc.JdbcBackend.statement, level: DEBUG}
+      { name: com.zaxxer.hikari.pool.HikariPool, level: INFO }
+    ]
+
+
 ## 1.2.1 ([#25](https://git.mobcastdev.com/Platform/common-config/pull/25) 2014-09-08 09:55:51)
 
 Now resolves config placeholders.
