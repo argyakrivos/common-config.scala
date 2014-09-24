@@ -1,5 +1,13 @@
 # Change Log
 
+## 1.4.0 ([#26](https://git.mobcastdev.com/Platform/common-config/pull/26) 2014-09-22 10:08:25)
+
+Introduce setting for JVM DNS cache TTL
+
+### New feature
+
+As it turns out that the JVM has a DNS cache and that in most cases this has TTL "forever" this PR introduces a setting that can be used to change the TTL value to something more useful in a cloud environment.
+
 ## 1.3.0 ([#27](https://git.mobcastdev.com/Platform/common-config/pull/27) 2014-09-23 13:55:36)
 
 Introduce level configuration for specific loggers
