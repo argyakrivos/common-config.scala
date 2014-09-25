@@ -1,5 +1,13 @@
 # Change Log
 
+## 1.4.1 ([#28](https://git.mobcastdev.com/Platform/common-config/pull/28) 2014-09-25 14:05:43)
+
+Removed incorrect config setting
+
+### Bugfix
+
+- Removes `reference.conf` with `akka.loggers` override. We should not put library setting overrides in reference configuration [(CP-1879)](http://jira.blinkbox.local/jira/browse/CP-1879). Furthermore, `akka.loggers.0=akka.event.slf4j.Slf4jLogger` notation clashes with 'list' variant of the same setting (`akka.loggers=[akka.event.slf4j.Slf4jLogger]`) because of [this](https://github.com/typesafehub/config/issues/101) bug in Typesafe config library.
+
 ## 1.4.0 ([#26](https://git.mobcastdev.com/Platform/common-config/pull/26) 2014-09-22 10:08:25)
 
 Introduce setting for JVM DNS cache TTL
