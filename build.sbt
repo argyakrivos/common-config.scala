@@ -14,9 +14,6 @@ libraryDependencies ++= {
     "com.typesafe.scala-logging" %% "scala-logging-slf4j" % "2.1.2",
     "ch.qos.logback"             %  "logback-classic"     % "1.1.2",
     "org.json4s"                 %% "json4s-jackson"      % "3.2.10",
-    "org.scalatest"              %% "scalatest"           % "2.2.2"   % "test",
-    "org.mockito"                %  "mockito-all"         % "1.9.5"   % "test",
-    "junit"                      %  "junit"               % "4.11"    % "test",
-    "com.novocode"               %  "junit-interface"     % "0.11"    % "test"
+    "com.blinkbox.books"         %% "common-scala-test"   % "0.3.0"   % Test
   )
 }
