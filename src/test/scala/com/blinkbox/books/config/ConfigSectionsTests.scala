@@ -5,10 +5,13 @@ import java.net.{URI, URL}
 import java.util.concurrent.TimeUnit
 
 import com.typesafe.config.ConfigException.BadValue
+import org.junit.runner.RunWith
+import org.scalatest.junit.JUnitRunner
 import org.scalatest.{FunSuite, Matchers}
 
 import scala.concurrent.duration.FiniteDuration
 
+@RunWith(classOf[JUnitRunner])
 class ConfigSectionsTests extends FunSuite with Matchers with Configuration {
 
   test("Load API config") {

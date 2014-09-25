@@ -1,10 +1,11 @@
 package com.blinkbox.books.config
 
-import com.blinkbox.books.config
 import com.typesafe.config.ConfigFactory
-import java.io.File
+import org.junit.runner.RunWith
+import org.scalatest.junit.JUnitRunner
 import org.scalatest.{BeforeAndAfterEach, FunSuite, Matchers}
 
+@RunWith(classOf[JUnitRunner])
 class ConfigurationTests extends FunSuite with BeforeAndAfterEach with Matchers {
 
   class Configured extends Configuration
