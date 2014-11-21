@@ -1,6 +1,6 @@
 package com.blinkbox.books
 
-import com.typesafe.scalalogging.slf4j.Logger
+import com.typesafe.scalalogging.Logger
 import org.slf4j.MDC
 
 package object logging {
