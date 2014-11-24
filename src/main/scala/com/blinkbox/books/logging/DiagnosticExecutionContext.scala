@@ -45,7 +45,7 @@ private class ChainedDiagnosticExecutionContext(delegate: ExecutionContext) exte
   private val capturedMDC = MDC.getCopyOfContextMap
 
   override def execute(runnable: Runnable) = delegate.execute(new Runnable {
-    def run() {
+    def run(): Unit = {
       val originalMDC = MDC.getCopyOfContextMap
       setMDC(capturedMDC)
       try runnable.run()

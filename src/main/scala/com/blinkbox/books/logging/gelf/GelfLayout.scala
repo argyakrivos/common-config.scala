@@ -39,15 +39,15 @@ class GelfLayout extends LayoutBase[ILoggingEvent] {
   @BeanProperty var includeLoggerName: Boolean = false
   @BeanProperty var includeThreadName: Boolean = false
 
-  override def start() {
+  override def start(): Unit = {
     shortMessageLayout = newPatternLayout(shortMessagePattern)
     fullMessageLayout = newPatternLayout(fullMessagePattern)
     exceptionLayout = newPatternLayout("%xThrowable")
-    hostName = lookupHostName
+    hostName = lookupHostName()
     super.start()
   }
 
-  override def stop() {
+  override def stop(): Unit = {
     shortMessageLayout.stop()
     fullMessageLayout.stop()
     exceptionLayout.stop()
@@ -91,7 +91,7 @@ class GelfLayout extends LayoutBase[ILoggingEvent] {
       case _ => event.getTimeStamp
     }
 
-  private def lookupHostName: String =
+  private def lookupHostName(): String =
     try InetAddress.getLocalHost.getHostName
     catch {
       case e: UnknownHostException =>

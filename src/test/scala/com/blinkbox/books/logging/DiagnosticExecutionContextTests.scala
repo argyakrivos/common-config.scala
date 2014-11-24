@@ -18,7 +18,7 @@ private class TestExecutor extends Executor {
 
 class DiagnosticExecutionContextTests extends FunSuite with BeforeAndAfterEach with Matchers with AsyncAssertions {
 
-  override def beforeEach() {
+  override def beforeEach(): Unit = {
     MDC.clear()
   }
 
