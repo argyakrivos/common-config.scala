@@ -24,7 +24,7 @@ class UdpAppender[T] extends AppenderBase[T] {
   @BeanProperty var host: String = null
   @BeanProperty var port: Int = DefaultPort
 
-  override def start() {
+  override def start(): Unit = {
     if (host == null) addError(s"No host set for $name")
     if (layout == null) addError(s"No layout set for $name")
     if (maxChunkSize < 256 || maxChunkSize > Chunk.MaxSize) addError(s"$name has invalid chunk size")
@@ -38,11 +38,11 @@ class UdpAppender[T] extends AppenderBase[T] {
     super.start()
   }
 
-  override def stop() {
+  override def stop(): Unit = {
     socket.close()
   }
 
-  def append(event: T) {
+  def append(event: T): Unit = {
     val layoutData = new ByteArrayInputStream(layout.doLayout(event).getBytes(UTF_8))
     Chunk.readChunks(new DeflaterInputStream(layoutData), maxChunkSize) match {
       case Success(chunks) => chunks.map(_.toPacket).foreach(socket.send)

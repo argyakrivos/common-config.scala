@@ -12,7 +12,7 @@ class ConfigurationTests extends FunSuite with BeforeAndAfterEach with Matchers 
 
   val originalEnvironment = System.getenv()
 
-  override def afterEach() {
+  override def afterEach(): Unit = {
     setEnv(originalEnvironment)
     System.clearProperty("testing.conf.test")
   }
@@ -71,7 +71,7 @@ class ConfigurationTests extends FunSuite with BeforeAndAfterEach with Matchers 
   }
 
   // dirty dirty hack to allow setting environment variables
-  private def setEnv(newEnv: java.util.Map[String, String]) {
+  private def setEnv(newEnv: java.util.Map[String, String]): Unit = {
     val classes = classOf[java.util.Collections].getDeclaredClasses
     val cl = classes.filter(_.getName == "java.util.Collections$UnmodifiableMap").head
     val field = cl.getDeclaredField("m")
