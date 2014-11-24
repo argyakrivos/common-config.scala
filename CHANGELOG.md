@@ -1,5 +1,14 @@
 # Change Log
 
+## 2.0.1 ([#31](https://git.mobcastdev.com/Platform/common-config/pull/31) 2014-11-24 13:47:04)
+
+Fixed a bunch of warnings
+
+### Improvements
+
+- Changed sbt file to newer ‘multi module’ style.
+- Added some stricter compiler flags and fixed a bunch of warnings.
+
 ## 2.0.0 ([#29](https://git.mobcastdev.com/Platform/common-config/pull/29) 2014-11-24 11:01:22)
 
 ### Breaking changes
