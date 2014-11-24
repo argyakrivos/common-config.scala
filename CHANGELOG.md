@@ -1,5 +1,14 @@
 # Change Log
 
+## 2.0.0 ([#29](https://git.mobcastdev.com/Platform/common-config/pull/29) 2014-11-24 11:01:22)
+
+### Breaking changes
+
+- Changed to scala-logging 3.1.0 as we have seen some very strange
+behaviour with the 2.x builds which is fixed in 3.x
+- Dropped support for Scala 2.10 as the later logging library requires
+2.11.
+
 ## 1.4.1 ([#28](https://git.mobcastdev.com/Platform/common-config/pull/28) 2014-09-25 14:05:43)
 
 Removed incorrect config setting
