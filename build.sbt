@@ -6,6 +6,8 @@ version := scala.util.Try(scala.io.Source.fromFile("VERSION").mkString.trim).get
 
 scalaVersion := "2.11.4"
 
+crossScalaVersions := Seq("2.11.4")
+
 scalacOptions := Seq("-unchecked", "-deprecation", "-feature", "-encoding", "utf8", "-target:jvm-1.7")
 
 libraryDependencies ++= {
