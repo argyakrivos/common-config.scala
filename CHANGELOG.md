@@ -1,5 +1,16 @@
 # Change Log
 
+## 2.1.0 ([#32](https://git.mobcastdev.com/Platform/common-config/pull/32) 2014-11-26 17:18:37)
+
+Added configuration for thread pools
+
+### New features
+
+- Now has a `ThreadPoolConfig` class to load configuration for bounded
+thread pools.
+- `DiagnosticExecutionContext` has a new `apply` method which can
+create a context from a `ThreadPoolConfig` instance.
+
 ## 2.0.1 ([#31](https://git.mobcastdev.com/Platform/common-config/pull/31) 2014-11-24 13:47:04)
 
 Fixed a bunch of warnings
