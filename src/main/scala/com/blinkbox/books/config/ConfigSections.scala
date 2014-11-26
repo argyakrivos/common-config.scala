@@ -11,9 +11,11 @@ import com.typesafe.config.ConfigException.BadValue
 import scala.concurrent.duration._
 
 case class ApiConfig(externalUrl: URL, localUrl: URL, timeout: FiniteDuration)
+
 case class AuthClientConfig(url: URL, keysDir: File) {
   val sessionUrl = new URL(url, "session")
 }
+
 case class DatabaseConfig(uri: URI) {
   val host = if (uri.getHost != null) uri.getHost else throw new BadValue("db.url", "Host is missing or it's incorrect.")
   val port = if (uri.getPort != -1) Some(uri.getPort) else None
@@ -30,7 +32,8 @@ case class DatabaseConfig(uri: URI) {
   val dbProperties = if (uri.getQuery != null) Some(uri.getQuery) else None
   val jdbcUrl = s"jdbc:${uri.getScheme}://$host${port.map(":" + _).getOrElse("")}/$db${dbProperties.map("?" + _).getOrElse("")}"
 }
-case class SwaggerConfig(baseUrl: URL, docsPath: String)
+
+case class ThreadPoolConfig(corePoolSize: Int, maxPoolSize: Int, keepAliveTime: FiniteDuration, queueSize: Int)
 
 object ApiConfig {
   def apply(config: Config, prefix: String): ApiConfig = ApiConfig(
@@ -50,14 +53,16 @@ object DatabaseConfig {
     config.getUri(s"$prefix.url"))
 }
 
-object SwaggerConfig {
-  def apply(config: Config, version: Int): SwaggerConfig = SwaggerConfig(
-    config.getHttpUrl(s"swagger.v$version.baseUrl"),
-    config.getString(s"swagger.v$version.docsPath"))
-}
-
 object JvmConfig {
   def apply(config: Config): Unit = {
     config.getFiniteDurationOption("jvm.dnsCacheTtl").foreach(d => Security.setProperty("networkaddress.cache.ttl", d.toSeconds.toString))
   }
+}
+
+object ThreadPoolConfig {
+  def apply(config: Config, prefix: String): ThreadPoolConfig = ThreadPoolConfig(
+    config.getInt(s"$prefix.corePoolSize"),
+    config.getInt(s"$prefix.maxPoolSize"),
+    config.getDuration(s"$prefix.keepAliveTime", TimeUnit.MILLISECONDS).millis,
+    config.getInt(s"$prefix.queueSize"))
 }
