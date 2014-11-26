@@ -85,4 +85,12 @@ class ConfigSectionsTests extends FunSuite with Matchers with Configuration {
     }
     assert(thrown.getMessage == "Invalid value at 'db.url': Database name is not well-formed: '/mydb/woah'.")
   }
+
+  test("Load thread pool config") {
+    val c = ThreadPoolConfig(config, "service.test.threadPool")
+    assert(c.corePoolSize == 2)
+    assert(c.maxPoolSize == 5)
+    assert(c.keepAliveTime == FiniteDuration(60, TimeUnit.SECONDS))
+    assert(c.queueSize == 10)
+  }
 }

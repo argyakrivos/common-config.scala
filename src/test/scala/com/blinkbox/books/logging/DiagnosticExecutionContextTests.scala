@@ -1,11 +1,13 @@
 package com.blinkbox.books.logging
 
-import java.util.concurrent.{Executor, Executors, LinkedBlockingQueue}
+import java.util.concurrent.{TimeUnit, Executor, Executors, LinkedBlockingQueue}
 import java.util.concurrent.atomic.AtomicReference
+import com.blinkbox.books.config.ThreadPoolConfig
 import org.scalatest.{BeforeAndAfterEach, FunSuite, Matchers}
 import org.scalatest.concurrent.AsyncAssertions
 import org.slf4j.MDC
 import scala.concurrent.ExecutionContext
+import scala.concurrent.duration.FiniteDuration
 
 // a really basic executor that executes a single item and which doesn't propagate any context
 // at the point of executing the runnable, which some of the built-in executors appear to do
@@ -20,6 +22,11 @@ class DiagnosticExecutionContextTests extends FunSuite with BeforeAndAfterEach w
 
   override def beforeEach(): Unit = {
     MDC.clear()
+  }
+
+  test("Can be created from thread pool configuration") {
+    val config = ThreadPoolConfig(2, 5, FiniteDuration(60, TimeUnit.SECONDS), 10)
+    DiagnosticExecutionContext(config) // assume it's fine if it doesn't throw
   }
 
   test("Copies execution context from the originating thread to the new thread") {

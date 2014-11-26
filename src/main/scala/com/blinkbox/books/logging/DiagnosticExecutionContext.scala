@@ -1,5 +1,8 @@
 package com.blinkbox.books.logging
 
+import java.util.concurrent.{ArrayBlockingQueue, TimeUnit, ThreadPoolExecutor}
+
+import com.blinkbox.books.config.ThreadPoolConfig
 import org.slf4j.MDC
 import scala.concurrent.{ExecutionContext, ExecutionContextExecutor}
 
@@ -8,6 +11,16 @@ import scala.concurrent.{ExecutionContext, ExecutionContextExecutor}
  */
 object DiagnosticExecutionContext {
   def apply(delegate: ExecutionContext): ExecutionContextExecutor = new DiagnosticExecutionContext(delegate)
+  def apply(config: ThreadPoolConfig): ExecutionContextExecutor = {
+    val executor = new ThreadPoolExecutor(
+      config.corePoolSize,
+      config.maxPoolSize,
+      config.keepAliveTime.toMillis,
+      TimeUnit.MILLISECONDS,
+      new ArrayBlockingQueue[Runnable](config.queueSize))
+    executor.prestartAllCoreThreads()
+    DiagnosticExecutionContext(ExecutionContext.fromExecutor(executor))
+  }
 }
 
 /**
