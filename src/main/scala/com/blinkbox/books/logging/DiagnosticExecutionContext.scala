@@ -1,9 +1,12 @@
 package com.blinkbox.books.logging
 
-import java.util.concurrent.{ArrayBlockingQueue, TimeUnit, ThreadPoolExecutor}
+import java.util.concurrent.{ArrayBlockingQueue, ThreadPoolExecutor, TimeUnit}
 
 import com.blinkbox.books.config.ThreadPoolConfig
+import com.blinkbox.books.metrics.InstrumentedThreadPoolExecutor
+import com.codahale.metrics.MetricRegistry
 import org.slf4j.MDC
+
 import scala.concurrent.{ExecutionContext, ExecutionContextExecutor}
 
 /**
@@ -11,7 +14,18 @@ import scala.concurrent.{ExecutionContext, ExecutionContextExecutor}
  */
 object DiagnosticExecutionContext {
   def apply(delegate: ExecutionContext): ExecutionContextExecutor = new DiagnosticExecutionContext(delegate)
+
   def apply(config: ThreadPoolConfig): ExecutionContextExecutor = {
+    val executor = newThreadPoolExecutor(config)
+    DiagnosticExecutionContext(ExecutionContext.fromExecutor(executor))
+  }
+
+  def apply(config: ThreadPoolConfig, registry: MetricRegistry, name: String): ExecutionContextExecutor = {
+    val executor = new InstrumentedThreadPoolExecutor(newThreadPoolExecutor(config), registry, name)
+    DiagnosticExecutionContext(ExecutionContext.fromExecutor(executor))
+  }
+
+  private def newThreadPoolExecutor(config: ThreadPoolConfig): ThreadPoolExecutor = {
     val executor = new ThreadPoolExecutor(
       config.corePoolSize,
       config.maxPoolSize,
@@ -19,7 +33,7 @@ object DiagnosticExecutionContext {
       TimeUnit.MILLISECONDS,
       new ArrayBlockingQueue[Runnable](config.queueSize))
     executor.prestartAllCoreThreads()
-    DiagnosticExecutionContext(ExecutionContext.fromExecutor(executor))
+    executor
   }
 }
 

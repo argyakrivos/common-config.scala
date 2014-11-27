@@ -1,11 +1,14 @@
 package com.blinkbox.books.logging
 
-import java.util.concurrent.{TimeUnit, Executor, Executors, LinkedBlockingQueue}
 import java.util.concurrent.atomic.AtomicReference
+import java.util.concurrent.{Executor, Executors, LinkedBlockingQueue, TimeUnit}
+
 import com.blinkbox.books.config.ThreadPoolConfig
-import org.scalatest.{BeforeAndAfterEach, FunSuite, Matchers}
+import com.codahale.metrics.MetricRegistry
 import org.scalatest.concurrent.AsyncAssertions
+import org.scalatest.{BeforeAndAfterEach, FunSuite, Matchers}
 import org.slf4j.MDC
+
 import scala.concurrent.ExecutionContext
 import scala.concurrent.duration.FiniteDuration
 
@@ -27,6 +30,12 @@ class DiagnosticExecutionContextTests extends FunSuite with BeforeAndAfterEach w
   test("Can be created from thread pool configuration") {
     val config = ThreadPoolConfig(2, 5, FiniteDuration(60, TimeUnit.SECONDS), 10)
     DiagnosticExecutionContext(config) // assume it's fine if it doesn't throw
+  }
+
+  test("Can be created from thread pool configuration and a metric registry") {
+    val config = ThreadPoolConfig(2, 5, FiniteDuration(60, TimeUnit.SECONDS), 10)
+    val registry = new MetricRegistry
+    DiagnosticExecutionContext(config, registry, "test-ctx") // assume it's fine if it doesn't throw
   }
 
   test("Copies execution context from the originating thread to the new thread") {
