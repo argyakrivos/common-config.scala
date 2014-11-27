@@ -4,6 +4,7 @@ Contains code to bootstrap your Scala applications.
 
 - [Configuration](#configuration)
 - [Logging](#logging)
+- [Metrics](#metrics)
  
 ## Configuration
 
@@ -124,3 +125,19 @@ If you log an MDC property named `timestamp` containing a UNIX timestamp then it
 To test the logging out on your machine, the easiest option is to vagrant up the [graylog-vagrant virtual machine](https://git.mobcastdev.com/ITOPS/graylog-vagrant).
 
 Any information placed in the [MDC](http://logback.qos.ch/manual/mdc.html) will be sent as properties in the log messages, which are very useful for filtering them. When using futures, ensure you wrap any execution contexts with `DiagnosticExecutionContext` to ensure that MDC state is propagated correctly.
+
+## Metrics
+
+The library integrates with Dropwizard Metrics (formerly Codahale Metrics) to improve the ability to monitor software. These can be logged to Graylog and/or New Relic, as well as more mundane places like the console.
+
+Add instrumentation to your thread pools by wrapping them in an `InstrumentedThreadPoolExecutor`. This will give you metrics useful for tuning them, including:
+
+* Pool size (gauge)
+* Queue size (gauge)
+* Submitted count (meter)
+* Completed count (meter)
+* Rejected count (meter)
+* Running count (counter)
+* Task duration (timer)
+
+Using the constructor for `DiagnosticExecutionContext` that takes a `MetricRegistry` will apply these to the created context for you.
