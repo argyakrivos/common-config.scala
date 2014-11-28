@@ -34,7 +34,7 @@ object Slf4jReporter {
 class Slf4jReporter(registry: MetricRegistry, logger: Logger, marker: Marker, rateUnit: TimeUnit, durationUnit: TimeUnit, filter: MetricFilter)
   extends ScheduledReporter(registry, "slf4j-reporter", filter, rateUnit, durationUnit) {
 
-  def report(gauges: util.SortedMap[String, Gauge[_]], counters: util.SortedMap[String, Counter], histograms: util.SortedMap[String, Histogram], meters: util.SortedMap[String, Meter], timers: util.SortedMap[String, Timer]) {
+  def report(gauges: util.SortedMap[String, Gauge[_]], counters: util.SortedMap[String, Counter], histograms: util.SortedMap[String, Histogram], meters: util.SortedMap[String, Meter], timers: util.SortedMap[String, Timer]): Unit = {
     for (entry <- gauges.entrySet) logGauge(entry.getKey, entry.getValue)
     for (entry <- counters.entrySet) logCounter(entry.getKey, entry.getValue)
     for (entry <- histograms.entrySet) logHistogram(entry.getKey, entry.getValue)
@@ -42,7 +42,7 @@ class Slf4jReporter(registry: MetricRegistry, logger: Logger, marker: Marker, ra
     for (entry <- timers.entrySet) logTimer(entry.getKey, entry.getValue)
   }
 
-  private def logTimer(name: String, timer: Timer) {
+  private def logTimer(name: String, timer: Timer): Unit = {
     val snapshot = timer.getSnapshot
     val context = ListMap(
       "metricType" -> "timer",
@@ -67,7 +67,7 @@ class Slf4jReporter(registry: MetricRegistry, logger: Logger, marker: Marker, ra
     logger.withContext(context)(_.info(marker, message(context)))
   }
 
-  private def logMeter(name: String, meter: Meter) {
+  private def logMeter(name: String, meter: Meter): Unit = {
     val context = ListMap(
       "metricType" -> "meter",
       "metricName" -> name,
@@ -80,10 +80,10 @@ class Slf4jReporter(registry: MetricRegistry, logger: Logger, marker: Marker, ra
     logger.withContext(context)(_.info(marker, message(context)))
   }
 
-  private def logHistogram(name: String, histogram: Histogram) {
+  private def logHistogram(name: String, histogram: Histogram): Unit = {
     val snapshot = histogram.getSnapshot
     val context = ListMap(
-      "metricType" -> "meter",
+      "metricType" -> "histogram",
       "metricName" -> name,
       "count" -> histogram.getCount,
       "min" -> convertDuration(snapshot.getMin),
@@ -99,12 +99,12 @@ class Slf4jReporter(registry: MetricRegistry, logger: Logger, marker: Marker, ra
     logger.withContext(context)(_.info(marker, message(context)))
   }
 
-  private def logCounter(name: String, counter: Counter) {
-    val context = ListMap("metricType" -> "meter", "metricName" -> name, "count" -> counter.getCount)
+  private def logCounter(name: String, counter: Counter): Unit = {
+    val context = ListMap("metricType" -> "counter", "metricName" -> name, "count" -> counter.getCount)
     logger.withContext(context)(_.info(marker, message(context)))
   }
 
-  private def logGauge(name: String, gauge: Gauge[_]) {
+  private def logGauge(name: String, gauge: Gauge[_]): Unit = {
     val context = ListMap("metricType" -> "gauge", "metricName" -> name, "value" -> gauge.getValue)
     logger.withContext(context)(_.info(marker, message(context)))
   }
