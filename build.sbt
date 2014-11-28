@@ -11,6 +11,7 @@ lazy val root = (project in file(".")).
       "com.typesafe.scala-logging" %% "scala-logging"     % "3.1.0",
       "ch.qos.logback"             %  "logback-classic"   % "1.1.2",
       "org.json4s"                 %% "json4s-jackson"    % "3.2.11",
+      "io.dropwizard.metrics"      %  "metrics-core"      % "3.1.0",
       "com.blinkbox.books"         %% "common-scala-test" % "0.3.0"   % Test
     )
   )

@@ -1,5 +1,16 @@
 # Change Log
 
+## 2.2.0 ([#33](https://git.mobcastdev.com/Platform/common-config/pull/33) 2014-11-27 18:28:52)
+
+Added metrics to thread pools
+
+### New features
+
+- Has a new `InstrumentedThreadPoolExecutor` class which adds a couple
+of metrics to `InstrumentedExecutorService` for thread pools.
+- A new `apply` method for `DiagnosticExecutionContext` to allow
+creation of instrumented thread pools easily.
+
 ## 2.1.0 ([#32](https://git.mobcastdev.com/Platform/common-config/pull/32) 2014-11-26 17:18:37)
 
 Added configuration for thread pools
