@@ -53,15 +53,15 @@ class Slf4jReporter(registry: MetricRegistry, logger: Logger, marker: Marker, ra
       "mean" -> convertDuration(snapshot.getMean),
       "stddev" -> convertDuration(snapshot.getStdDev),
       "median" -> convertDuration(snapshot.getMedian),
-      "p75" -> convertDuration(snapshot.get75thPercentile),
-      "p95" -> convertDuration(snapshot.get95thPercentile),
-      "p98" -> convertDuration(snapshot.get98thPercentile),
-      "p99" -> convertDuration(snapshot.get99thPercentile),
-      "p999" -> convertDuration(snapshot.get999thPercentile),
+      "75thPercentile" -> convertDuration(snapshot.get75thPercentile),
+      "95thPercentile" -> convertDuration(snapshot.get95thPercentile),
+      "98thPercentile" -> convertDuration(snapshot.get98thPercentile),
+      "99thPercentile" -> convertDuration(snapshot.get99thPercentile),
+      "999thPercentile" -> convertDuration(snapshot.get999thPercentile),
       "meanRate" -> convertRate(timer.getMeanRate),
-      "m1" -> convertRate(timer.getOneMinuteRate),
-      "m5" -> convertRate(timer.getFiveMinuteRate),
-      "m15" -> convertRate(timer.getFifteenMinuteRate),
+      "1minRate" -> convertRate(timer.getOneMinuteRate),
+      "5minRate" -> convertRate(timer.getFiveMinuteRate),
+      "15minRate" -> convertRate(timer.getFifteenMinuteRate),
       "rateUnit" -> getRateUnit,
       "durationUnit" -> getDurationUnit)
     logger.withContext(context)(_.info(marker, message(context)))
@@ -73,9 +73,9 @@ class Slf4jReporter(registry: MetricRegistry, logger: Logger, marker: Marker, ra
       "metricName" -> name,
       "count" -> meter.getCount,
       "meanRate" -> convertRate(meter.getMeanRate),
-      "m1" -> convertRate(meter.getOneMinuteRate),
-      "m5" -> convertRate(meter.getFiveMinuteRate),
-      "m15" -> convertRate(meter.getFifteenMinuteRate),
+      "1minRate" -> convertRate(meter.getOneMinuteRate),
+      "5minRate" -> convertRate(meter.getFiveMinuteRate),
+      "15minRate" -> convertRate(meter.getFifteenMinuteRate),
       "rateUnit" -> getRateUnit)
     logger.withContext(context)(_.info(marker, message(context)))
   }
@@ -91,11 +91,11 @@ class Slf4jReporter(registry: MetricRegistry, logger: Logger, marker: Marker, ra
       "mean" -> convertDuration(snapshot.getMean),
       "stddev" -> convertDuration(snapshot.getStdDev),
       "median" -> convertDuration(snapshot.getMedian),
-      "p75" -> convertDuration(snapshot.get75thPercentile),
-      "p95" -> convertDuration(snapshot.get95thPercentile),
-      "p98" -> convertDuration(snapshot.get98thPercentile),
-      "p99" -> convertDuration(snapshot.get99thPercentile),
-      "p999" -> convertDuration(snapshot.get999thPercentile))
+      "75thPercentile" -> convertDuration(snapshot.get75thPercentile),
+      "95thPercentile" -> convertDuration(snapshot.get95thPercentile),
+      "98thPercentile" -> convertDuration(snapshot.get98thPercentile),
+      "99thPercentile" -> convertDuration(snapshot.get99thPercentile),
+      "999thPercentile" -> convertDuration(snapshot.get999thPercentile))
     logger.withContext(context)(_.info(marker, message(context)))
   }
 
