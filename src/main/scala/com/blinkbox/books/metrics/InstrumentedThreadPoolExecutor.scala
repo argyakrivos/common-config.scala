@@ -9,7 +9,13 @@ class InstrumentedThreadPoolExecutor(delegate: ThreadPoolExecutor, registry: Met
   registry.register(MetricRegistry.name(name, "size"), new Gauge[Int] {
     override def getValue = delegate.getPoolSize
   })
-  registry.register(MetricRegistry.name(name, "queue"), new Gauge[Int] {
+  registry.register(MetricRegistry.name(name, "remainingCapacity"), new Gauge[Int] {
+    override def getValue = delegate.getMaximumPoolSize - delegate.getPoolSize
+  })
+  registry.register(MetricRegistry.name(name, "queue", "size"), new Gauge[Int] {
     override def getValue = delegate.getQueue.size
+  })
+  registry.register(MetricRegistry.name(name, "queue", "remainingCapacity"), new Gauge[Int] {
+    override def getValue = delegate.getQueue.remainingCapacity
   })
 }
