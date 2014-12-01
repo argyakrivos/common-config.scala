@@ -1,5 +1,15 @@
 # Change Log
 
+## 2.3.0 ([#34](https://git.mobcastdev.com/Platform/common-config/pull/34) 2014-12-01 12:10:02)
+
+Added an SLF4J metrics reporter using MDC
+
+### New Features
+
+- Added an `Slf4jReporter` for metrics based on the built-in one, but
+which puts the various properties in the MDC context so they can be
+used in statistics/graphs in Graylog.
+
 ## 2.2.0 ([#33](https://git.mobcastdev.com/Platform/common-config/pull/33) 2014-11-27 18:28:52)
 
 Added metrics to thread pools
