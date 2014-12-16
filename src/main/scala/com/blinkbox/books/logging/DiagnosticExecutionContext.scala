@@ -1,9 +1,9 @@
 package com.blinkbox.books.logging
 
-import java.util.concurrent.{ArrayBlockingQueue, ThreadPoolExecutor, TimeUnit}
+import java.util.concurrent.{ArrayBlockingQueue, Executors, ThreadPoolExecutor, TimeUnit}
 
 import com.blinkbox.books.config.ThreadPoolConfig
-import com.blinkbox.books.metrics.InstrumentedThreadPoolExecutor
+import com.blinkbox.books.metrics.{InstrumentedThreadPoolExecutor, NamedThreadFactory}
 import com.codahale.metrics.MetricRegistry
 import org.slf4j.MDC
 
@@ -16,22 +16,24 @@ object DiagnosticExecutionContext {
   def apply(delegate: ExecutionContext): ExecutionContextExecutor = new DiagnosticExecutionContext(delegate)
 
   def apply(config: ThreadPoolConfig): ExecutionContextExecutor = {
-    val executor = newThreadPoolExecutor(config)
+    val executor = newThreadPoolExecutor(config, None)
     DiagnosticExecutionContext(ExecutionContext.fromExecutor(executor))
   }
 
   def apply(config: ThreadPoolConfig, registry: MetricRegistry, name: String): ExecutionContextExecutor = {
-    val executor = new InstrumentedThreadPoolExecutor(newThreadPoolExecutor(config), registry, name)
+    val executor = new InstrumentedThreadPoolExecutor(newThreadPoolExecutor(config, Some(name)), registry, name)
     DiagnosticExecutionContext(ExecutionContext.fromExecutor(executor))
   }
 
-  private def newThreadPoolExecutor(config: ThreadPoolConfig): ThreadPoolExecutor = {
+  private def newThreadPoolExecutor(config: ThreadPoolConfig, name: Option[String]): ThreadPoolExecutor = {
+    val factory = name.fold(Executors.defaultThreadFactory)(new NamedThreadFactory(Executors.defaultThreadFactory, _))
     val executor = new ThreadPoolExecutor(
       config.corePoolSize,
       config.maxPoolSize,
       config.keepAliveTime.toMillis,
       TimeUnit.MILLISECONDS,
-      new ArrayBlockingQueue[Runnable](config.queueSize))
+      new ArrayBlockingQueue[Runnable](config.queueSize),
+      factory)
     executor.prestartAllCoreThreads()
     executor
   }
