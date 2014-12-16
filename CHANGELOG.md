@@ -1,5 +1,13 @@
 # Change Log
 
+## 2.3.1 ([#36](https://git.mobcastdev.com/Platform/common-config/pull/36) 2014-12-16 17:23:52)
+
+Allowed names of threads to be set
+
+### Improvements
+
+- Names of threads in pools are now set when you give the pool a name.
+
 ## 2.3.0 ([#34](https://git.mobcastdev.com/Platform/common-config/pull/34) 2014-12-01 12:10:02)
 
 Added an SLF4J metrics reporter using MDC
